@@ -54,7 +54,6 @@ public class UserController {
             response.put("ApprovalStatus", 0);
             response.put("userType", null);
         }
-
         return ResponseEntity.ok(response);
     }
 }

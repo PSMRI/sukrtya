@@ -1,4 +1,4 @@
-# spring-boot-demo
+# Sukrtya on DIGIT
  spring boot demo with postgress or SQL Server database.
  In this application perform CRUD operations.
 
