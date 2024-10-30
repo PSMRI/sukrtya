@@ -1,0 +1,73 @@
+package com.piramal.spring_boot_demo.config;
+
+import com.piramal.spring_boot_demo.models.Form;
+import com.piramal.spring_boot_demo.models.UserProfile;
+import com.piramal.spring_boot_demo.repository.FormRepository;
+import com.piramal.spring_boot_demo.repository.UserProfileRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+
+@Configuration
+public class DatabaseSeeder {
+
+    @Autowired
+    private UserProfileRepository userProfileRepository;
+
+    @Autowired
+    private FormRepository formRepository;
+/*
+    @Bean
+    CommandLineRunner seedDatabase() {
+        return args -> {
+            // Seed a UserProfile
+            UserProfile userProfile = new UserProfile();
+            userProfile.setProfileName("ABHIMANYU KUMAR");
+            userProfile.setProfileDoB(LocalDate.of(1988, 7, 25));
+            userProfile.setProfileGender("Male");
+            userProfile.setProfileMobile("9155448855");
+            userProfile.setProfileWhatsApp("9155448855");
+            userProfile.setProfileAddress("Naya tola \nKatihar");
+            userProfile.setProfilePincode("854105");
+            userProfile.setProfilePhoto("");
+            userProfile.setProfileEduction("Post Graduate");
+            userProfile.setProfileEmail("abhimanyu.kumar@piramalswasthya.org");
+            userProfile.setProfileGenderID(1);
+            userProfile.setProfileEductionLevelID(8);
+            userProfile.setEducationId(33);
+            userProfile.setRoleId(18);
+            userProfile.setProfileStateID(0);
+            userProfile.setProfileDistrictID(201);
+            userProfile.setProfileBlockID(0);
+            userProfile.setAadharNo("");
+            userProfile.setAadharPhoto("");
+            userProfile.setUserType("DPHO (PIRAMAL)");
+
+            // Save the UserProfile
+            userProfileRepository.save(userProfile);
+
+            // Seed a Form associated with the UserProfile
+            Form form = new Form();
+            form.setFormName("Facility Assessment for APHC");
+            form.setFacilityTypeID(7);
+            form.setCreateDate(LocalDateTime.of(2024, 9, 23, 7, 34));
+            form.setFacilityType("Health & Wellness Centre - APHC");
+            form.setUserName("ABHIMANYU KUMAR");
+            form.setUserSubmissionDate(null);
+            form.setApprovedBy("");
+            form.setApprovedDate(null);
+            form.setTransactionId("28137568850924");
+            form.setApprovalStatus(0);
+            form.setUserId(1L);
+
+            // Save the Form
+            formRepository.save(form);
+        };
+    }*/
+}
