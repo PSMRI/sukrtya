@@ -1,6 +1,5 @@
 package com.piramal.spring_boot_demo.DTO;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
