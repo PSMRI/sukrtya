@@ -1,12 +1,26 @@
 package com.piramal.spring_boot_demo.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
-
-// DTO for individual QuestionOption
-@Getter@Setter
 public class QuestionOptionDTO {
     private String Text;
     private int Value;
-    // Getters and setters
+
+    public String getText()
+    {
+        return Text;
+    }
+
+    public void setText(String text)
+    {
+        Text = text;
+    }
+
+    public int getValue()
+    {
+        return Value;
+    }
+
+    public void setValue(int value)
+    {
+        Value = value;
+    }
 }
