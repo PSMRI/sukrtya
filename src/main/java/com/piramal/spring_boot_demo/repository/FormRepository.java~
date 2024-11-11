@@ -1,4 +1,0 @@
-package com.piramal.spring_boot_demo.repository;
-
-public interface FormRepository {
-}
