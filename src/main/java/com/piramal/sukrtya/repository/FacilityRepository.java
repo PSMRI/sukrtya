@@ -1,7 +1,7 @@
-package com.piramal.spring_boot_demo.repository;
+package com.piramal.sukrtya.repository;
 
 
-import com.piramal.spring_boot_demo.DTO.FacilityDetailDTO;
+import com.piramal.sukrtya.DTO.FacilityDetailDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 

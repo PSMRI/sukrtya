@@ -1,4 +1,4 @@
-package com.piramal.spring_boot_demo.DTO;
+package com.piramal.sukrtya.DTO;
 
 public class UserDTO {
     private String userName;

@@ -1,6 +1,5 @@
-package com.piramal.spring_boot_demo.services;
-import com.piramal.spring_boot_demo.DTO.UserDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+package com.piramal.sukrtya.services;
+import com.piramal.sukrtya.DTO.UserDTO;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,8 +10,13 @@ import java.sql.SQLException;
 
 @Service
 public class LoginService {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
+    public LoginService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+//    @Autowired
+//    private JdbcTemplate jdbcTemplate;
 
     public UserDTO getUserData(String username, String password) {
         String sql = "SELECT * FROM get_user_data(?, ?)";

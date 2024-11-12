@@ -1,7 +1,7 @@
-package com.piramal.spring_boot_demo.controller;
+package com.piramal.sukrtya.controller;
 
-import com.piramal.spring_boot_demo.DTO.FacilityDetailDTO;
-import com.piramal.spring_boot_demo.services.FacilityService;
+import com.piramal.sukrtya.DTO.FacilityDetailDTO;
+import com.piramal.sukrtya.services.FacilityService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

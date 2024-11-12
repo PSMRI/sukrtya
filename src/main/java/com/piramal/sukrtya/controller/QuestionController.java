@@ -1,8 +1,7 @@
-package com.piramal.spring_boot_demo.controller;
+package com.piramal.sukrtya.controller;
 
-import com.piramal.spring_boot_demo.DTO.QuestionResponseDTO;
-import com.piramal.spring_boot_demo.services.QuestionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.piramal.sukrtya.DTO.QuestionResponseDTO;
+import com.piramal.sukrtya.services.QuestionService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,9 +9,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/questions")
 public class QuestionController {
+    private final QuestionService questionService;
 
-    @Autowired
-    private QuestionService questionService;
+    public QuestionController(QuestionService questionService) {
+        this.questionService = questionService;
+    }
 
     @GetMapping("/getQuestionDetails")
     public List<QuestionResponseDTO> getQuestionDetails(

@@ -1,4 +1,4 @@
-package com.piramal.spring_boot_demo;
+package com.piramal.sukrtya;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

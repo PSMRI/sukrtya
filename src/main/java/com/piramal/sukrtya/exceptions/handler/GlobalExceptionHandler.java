@@ -1,4 +1,4 @@
-package com.piramal.spring_boot_demo.services;
+package com.piramal.sukrtya.exceptions.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

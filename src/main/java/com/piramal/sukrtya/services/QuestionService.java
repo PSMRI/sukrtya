@@ -1,8 +1,7 @@
-package com.piramal.spring_boot_demo.services;
+package com.piramal.sukrtya.services;
 
-import com.piramal.spring_boot_demo.DTO.QuestionOptionDTO;
-import com.piramal.spring_boot_demo.DTO.QuestionResponseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.piramal.sukrtya.DTO.QuestionOptionDTO;
+import com.piramal.sukrtya.DTO.QuestionResponseDTO;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -14,67 +13,12 @@ import java.util.Map;
 
 @Service
 public class QuestionService {
+    private final JdbcTemplate jdbcTemplate;
 
-//    @Autowired
-//    private JdbcTemplate jdbcTemplate;
+    public QuestionService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
-//    public List<QuestionResponseDTO> getQuestionDetails(int param) {
-//        // Main query to get question details
-//        String mainQuery = "SELECT * FROM get_question_details(?)";
-//
-//        List<QuestionResponseDTO> questions = jdbcTemplate.query(
-//                mainQuery,
-//                new Object[]{param},
-//                (rs, rowNum) -> {
-//                    QuestionResponseDTO question = new QuestionResponseDTO();
-//                    question.setQuestionId(rs.getInt("questionid"));
-//                    question.setQuestionName(rs.getString("questionname"));
-//                    question.setQuestionType(rs.getString("questiontype"));
-//                    question.setFaAnswers(rs.getString("faanswers"));
-//                    question.setSkipanswer(rs.getString("skipanswer"));
-//                    question.setSkipQuestionId(rs.getInt("skipquestionid"));
-//                    question.setAnswer(rs.getString("answer"));
-//                    question.setAnswerID(rs.getInt("answerid"));
-//                    question.setIsMandate(rs.getString("ismandate"));
-//                    question.setMaxvalue(rs.getLong("maxvalue"));
-//                    question.setMinvalue(rs.getLong("minvalue"));
-//
-//                    // Fetch options if question type is Single Choice
-//                    if ("Single Choice".equals(question.getQuestionType())) {
-//                        question.setQuestionOptions(getOptionsForFaAnswers(question.getFaAnswers()));
-//                    }
-//
-//                    return question;
-//                }
-//        );
-//
-//        return questions;
-//    }
-//
-//    private List<QuestionOptionDTO> getOptionsForFaAnswers(String faAnswers) {
-//        List<QuestionOptionDTO> options = new ArrayList<>();
-//
-//        // Split faAnswers and fetch options for each value
-//        for (String answerId : faAnswers.split("/")) {
-//            String optionQuery = "SELECT optionid as Value, optionnameen as Text FROM public.tbloptionmaster WHERE optionid = ?";
-//            QuestionOptionDTO option = jdbcTemplate.queryForObject(
-//                    optionQuery,
-//                    new Object[]{Integer.parseInt(answerId)},
-//                    (rs, rowNum) -> {
-//                        QuestionOptionDTO opt = new QuestionOptionDTO();
-//                        opt.setValue(rs.getInt("Value"));
-//                        opt.setText(rs.getString("Text"));
-//                        return opt;
-//                    }
-//            );
-//            options.add(option);
-//        }
-//
-//        return options;
-//    }
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     public List<QuestionResponseDTO> getQuestionDetails(int param, String tranid) {
         String mainQuery = "SELECT * FROM get_question_details(?)";

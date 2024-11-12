@@ -1,4 +1,4 @@
-package com.piramal.spring_boot_demo;
+package com.piramal.sukrtya;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

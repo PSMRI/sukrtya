@@ -1,4 +1,4 @@
-package com.piramal.spring_boot_demo.services;
+package com.piramal.sukrtya.exceptions.handler;
 
 public class UnauthorizedException extends RuntimeException {
     public UnauthorizedException(String message) {

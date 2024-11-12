@@ -1,7 +1,7 @@
-package com.piramal.spring_boot_demo.services;
+package com.piramal.sukrtya.services;
 
-import com.piramal.spring_boot_demo.DTO.FacilityDetailDTO;
-import com.piramal.spring_boot_demo.repository.FacilityRepository;
+import com.piramal.sukrtya.DTO.FacilityDetailDTO;
+import com.piramal.sukrtya.repository.FacilityRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

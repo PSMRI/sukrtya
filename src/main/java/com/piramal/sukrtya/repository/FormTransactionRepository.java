@@ -1,16 +1,17 @@
-package com.piramal.spring_boot_demo.repository;
+package com.piramal.sukrtya.repository;
 
-import com.piramal.spring_boot_demo.DTO.FormTranslDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.piramal.sukrtya.DTO.FormTranslDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class FormTranslRepository {
+public class FormTransactionRepository {
+    private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public FormTransactionRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public List<FormTranslDTO> getFormTranslList(int facilityType, int facilityId, int rgLId) {
         String sql = "SELECT * FROM get_form_data(?, ?)";
