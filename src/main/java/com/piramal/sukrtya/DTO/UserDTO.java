@@ -1,37 +1,15 @@
-package com.piramal.spring_boot_demo.models;
+package com.piramal.sukrtya.DTO;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "users")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userID;
-
+public class UserDTO {
     private String userName;
     private String password;
-    private Integer userTypeID;
-    private Long profileID;
+    private int userTypeID;
+    private int profileID;
+    private long userID;
     private String profileName;
     private String profilePhoto;
-    private Integer approvalStatus;
+    private int approvalStatus;
     private String userType;
-
-    public Long getUserID()
-    {
-        return userID;
-    }
-
-    public void setUserID(Long userID)
-    {
-        this.userID = userID;
-    }
 
     public String getUserName()
     {
@@ -53,24 +31,34 @@ public class User {
         this.password = password;
     }
 
-    public Integer getUserTypeID()
+    public int getUserTypeID()
     {
         return userTypeID;
     }
 
-    public void setUserTypeID(Integer userTypeID)
+    public void setUserTypeID(int userTypeID)
     {
         this.userTypeID = userTypeID;
     }
 
-    public Long getProfileID()
+    public int getProfileID()
     {
         return profileID;
     }
 
-    public void setProfileID(Long profileID)
+    public void setProfileID(int profileID)
     {
         this.profileID = profileID;
+    }
+
+    public long getUserID()
+    {
+        return userID;
+    }
+
+    public void setUserID(long userID)
+    {
+        this.userID = userID;
     }
 
     public String getProfileName()
@@ -93,12 +81,12 @@ public class User {
         this.profilePhoto = profilePhoto;
     }
 
-    public Integer getApprovalStatus()
+    public int getApprovalStatus()
     {
         return approvalStatus;
     }
 
-    public void setApprovalStatus(Integer approvalStatus)
+    public void setApprovalStatus(int approvalStatus)
     {
         this.approvalStatus = approvalStatus;
     }
