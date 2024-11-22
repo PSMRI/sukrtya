@@ -1,0 +1,9 @@
+after terrform cluster creation. run below command.This will allow to access kube cluster from local
+=========================================================================
+aws eks --region $(terraform output -raw region) update-kubeconfig \
+    --name $(terraform output -raw cluster_name)
+========================================================================
+First, get information about the cluster.
+==> kubectl cluster-info
+Now verify that all three worker nodes are part of the cluster.
+==>kubectl get nodes
