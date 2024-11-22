@@ -1,3 +1,15 @@
+
+remote: Create a pull request for 'dev_ops' on GitHub by visiting:
+remote:      https://github.com/PSMRI/sukrtya/pull/new/dev_ops
+configure you aws credentials
+after that
+change you directory to dev_ops
+run command 
+===> terraform init
+===> terraform plan
+===> terraform aplly
+wait for some time , this csript create EKS cluster for you.
+============================================================================================
 after terrform cluster creation. run below command.This will allow to access kube cluster from local
 =========================================================================
 aws eks --region $(terraform output -raw region) update-kubeconfig \
