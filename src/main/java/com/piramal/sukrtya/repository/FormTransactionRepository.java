@@ -1,6 +1,6 @@
 package com.piramal.sukrtya.repository;
 
-import com.piramal.sukrtya.DTO.FormTranslDTO;
+import com.piramal.sukrtya.DTO.FormTransactionDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -13,11 +13,11 @@ public class FormTransactionRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<FormTranslDTO> getFormTranslList(int facilityType, int facilityId, int rgLId) {
+    public List<FormTransactionDTO> getFormTranslList(int facilityType, int facilityId, int rgLId) {
         String sql = "SELECT * FROM get_form_data(?, ?)";
 
         return jdbcTemplate.query(sql, new Object[]{facilityType, facilityId}, (rs, rowNum) -> {
-            FormTranslDTO form = new FormTranslDTO();
+            FormTransactionDTO form = new FormTransactionDTO();
             form.setFormID(rs.getInt("formid"));
             form.setFromName(rs.getString("formname"));
             form.setFacilityTypeID(rs.getInt("facilitytypeid"));

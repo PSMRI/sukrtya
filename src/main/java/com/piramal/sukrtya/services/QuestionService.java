@@ -6,10 +6,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.*;
 
 @Service
 public class QuestionService {
@@ -44,7 +43,7 @@ public class QuestionService {
                         int faqid = question.getQuestionId(); // Example usage; adjust as needed
                         int formid = param; // Example usage; adjust as needed
 
-                        Map<String, String> answerData = getAnswerData(tranid, faqid, formid);
+                        Map<String, String> answerData = getAnswerData(tranid, faqid, formid, question.getQuestionType());
                         question.setAnswer(answerData.get("Answer"));
                         question.setAnswerID(Integer.parseInt(answerData.get("AnswerID")));
                     } else {
@@ -83,30 +82,52 @@ public class QuestionService {
         return options;
     }
 
-    // Method to retrieve Answer and AnswerID based on parameters
-    private Map<String, String> getAnswerData(String tranid, int faqid, int formid) {
-        String answerQuery = "SELECT faanswers FROM tblfaanswers WHERE fatransactionsid = ? AND faqid = ? AND formid = ?";
-      try{
+
+// Method to retrieve Answer and AnswerID based on parameters
+private Map<String, String> getAnswerData(String tranid, int faqid, int formid, String questionType) {
+    String answerQuery = "SELECT faanswers FROM tblfaanswers WHERE fatransactionsid = ? AND faqid = ? AND formid = ?";
+    try {
         return jdbcTemplate.queryForObject(
                 answerQuery,
                 new Object[]{tranid, faqid, formid},
                 (rs, rowNum) -> {
                     Map<String, String> result = new HashMap<>();
-                    result.put("Answer", rs.getString("faanswers"));
+                    String faAnswers = rs.getString("faanswers");
+
+                    if ("Camera".equals(questionType)) {
+                        // Convert image URL to Base64
+                        String base64Image = convertImageUrlToBase64("https://digit-sukrtya.shsbihar.in/" + faAnswers);
+                        result.put("Answer","data:image/jpeg;base64," +base64Image);
+                    } else {
+                        result.put("Answer", faAnswers);
+                    }
+
                     result.put("AnswerID", "0"); // Placeholder; adjust as necessary
                     return result;
                 }
         );
-      } catch (EmptyResultDataAccessException e) {
-          // Handle case where no result is found
-          Map<String, String> defaultResult = new HashMap<>();
-          defaultResult.put("Answer", "");  // Default empty answer
-          defaultResult.put("AnswerID", "0"); // Default AnswerID
-          return defaultResult;
-      } catch (Exception e) {
-          // Handle other exceptions if needed
-          e.printStackTrace();
-          throw new RuntimeException("Error retrieving answer data", e);
-      }
+    } catch (EmptyResultDataAccessException e) {
+        Map<String, String> defaultResult = new HashMap<>();
+        defaultResult.put("Answer", "");  // Default empty answer
+        defaultResult.put("AnswerID", "0"); // Default AnswerID
+        return defaultResult;
+    } catch (Exception e) {
+        e.printStackTrace();
+        throw new RuntimeException("Error retrieving answer data", e);
+    }
+}
+
+    // Helper method to convert image URL to Base64
+    private String convertImageUrlToBase64(String imageUrl) {
+        try {
+            URL url = new URL(imageUrl);
+            InputStream in = url.openStream();
+            byte[] imageBytes = in.readAllBytes();
+            in.close();
+            return Base64.getEncoder().encodeToString(imageBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error converting image URL to Base64", e);
+        }
     }
 }

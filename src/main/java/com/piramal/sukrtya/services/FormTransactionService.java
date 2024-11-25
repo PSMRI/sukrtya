@@ -1,6 +1,6 @@
 package com.piramal.sukrtya.services;
 
-import com.piramal.sukrtya.DTO.FormTranslDTO;
+import com.piramal.sukrtya.DTO.FormTransactionDTO;
 import com.piramal.sukrtya.repository.FormTransactionRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class FormTransactionService {
         this.repository = repository;
     }
 
-    public List<FormTranslDTO> getFormTranslList(int facilityType, int facilityId, int rgLId) {
+    public List<FormTransactionDTO> getFormTranslList(int facilityType, int facilityId, int rgLId) {
         return repository.getFormTranslList(facilityType, facilityId, rgLId);
     }
 }
