@@ -20,13 +20,14 @@ public class FormTransactionController {
     }
 
     @GetMapping("/GetFormTransactionList")
-    public Map<String, Object> getFormTranslList(
+    public List<FormTransactionDTO>  getFormTranslList(
             @RequestParam("facilytyType") int facilityType,
             @RequestParam("FacilityId") int facilityId,
             @RequestParam("RgLId") int rgLId) {
 
         List<FormTransactionDTO> objform = formTransactionService.getFormTranslList(facilityType, facilityId, rgLId);
-        return new HashMap<String, Object>() {{ put("objform", objform); }};
+        return formTransactionService.getFormTranslList(facilityType, facilityId, rgLId);
     }
+
 }
 
