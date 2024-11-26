@@ -61,7 +61,7 @@ public class FormAnswerService {
 
             if ("Camera".equalsIgnoreCase(answer.getQuestionType()) && isBase64Encoded(answer.getAnswer())){
                 String filePath = saveImage(answer.getAnswer(), transactionId, request.getFormId(), answer.getQuestionId());
-                faAnswer.setFaAnswers(filePath);
+               faAnswer.setFaAnswers(filePath);
             } else {
                 faAnswer.setFaAnswers(answer.getAnswer());
             }
@@ -77,18 +77,34 @@ public class FormAnswerService {
     }
     private String saveImage(String base64Image, String transactionId, Integer formId, Integer questionId) {
         try {
-            byte[] decodedBytes = Base64.getDecoder().decode(base64Image.split(",")[1]);
-            String fileName = formId + questionId + transactionId + ".jpg";
-            String filePath = "/SukrtyaImages/SurveyPhoto/" + fileName;
-
-            // Check if the file exists
-            Path path = Paths.get(filePath);
-            if (Files.exists(path)) {
-                Files.delete(path);
+            // Decode the Base64 string
+            String[] base64Parts = base64Image.split(",");
+            if (base64Parts.length < 2) {
+                throw new IllegalArgumentException("Invalid Base64 format");
             }
-            Files.write(path, decodedBytes);
+            byte[] decodedBytes = Base64.getDecoder().decode(base64Parts[1]);
 
-            return filePath;
+            // Construct file path
+            String fileName = formId+ questionId + transactionId + ".jpg";
+            Path directoryPath = Paths.get("SukrtyaImages", "SurveyPhoto");
+            Path filePath = directoryPath.resolve(fileName);
+
+            // Ensure the directory exists
+            if (!Files.exists(directoryPath)) {
+                Files.createDirectories(directoryPath);
+            }
+
+            // If the file exists, delete it
+            if (Files.exists(filePath)) {
+                Files.delete(filePath);
+            }
+
+            // Write the file
+            Files.write(filePath, decodedBytes);
+
+            return filePath.toString();
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid Base64 input", e);
         } catch (IOException e) {
             throw new RuntimeException("Error saving image", e);
         }

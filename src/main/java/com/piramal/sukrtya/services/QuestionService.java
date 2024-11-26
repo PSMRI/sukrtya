@@ -2,17 +2,24 @@ package com.piramal.sukrtya.services;
 
 import com.piramal.sukrtya.DTO.QuestionOptionDTO;
 import com.piramal.sukrtya.DTO.QuestionResponseDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
 public class QuestionService {
     private final JdbcTemplate jdbcTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(QuestionService.class);
 
     public QuestionService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -95,9 +102,18 @@ private Map<String, String> getAnswerData(String tranid, int faqid, int formid, 
                     String faAnswers = rs.getString("faanswers");
 
                     if ("Camera".equals(questionType)) {
+                        // Get the current directory
+                        String currentDirectory = Paths.get("").toAbsolutePath().toString();
+                        // Construct the full image path
+                        String imagePath = currentDirectory + File.separator + faAnswers;
+                        // Log the image path
+                        logger.info("Constructed image path: {}", imagePath);
                         // Convert image URL to Base64
-                        String base64Image = convertImageUrlToBase64("https://digit-sukrtya.shsbihar.in/" + faAnswers);
+                        String base64Image = convertImageUrlToBase64(imagePath);
+
+                        logger.info("image : {}", base64Image);
                         result.put("Answer","data:image/jpeg;base64," +base64Image);
+
                     } else {
                         result.put("Answer", faAnswers);
                     }
@@ -117,17 +133,17 @@ private Map<String, String> getAnswerData(String tranid, int faqid, int formid, 
     }
 }
 
-    // Helper method to convert image URL to Base64
-    private String convertImageUrlToBase64(String imageUrl) {
+    public String convertImageUrlToBase64(String imagePath) {
         try {
-            URL url = new URL(imageUrl);
-            InputStream in = url.openStream();
-            byte[] imageBytes = in.readAllBytes();
-            in.close();
+            // Read the image file as bytes
+            File imageFile = new File(imagePath);
+            byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
+
+            // Encode the byte array to Base64
             return Base64.getEncoder().encodeToString(imageBytes);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Error converting image URL to Base64", e);
+            throw new RuntimeException("Error converting image to Base64: " + imagePath, e);
         }
     }
 }
