@@ -41,7 +41,7 @@ public class FormAnswerService {
         formSubmission.setUserId(request.getUserId());
         formSubmission.setTransactionId(transactionId);
         formSubmission.setSubmitDate(LocalDateTime.now().toString());
-        formSubmission.setLattitude(request.getLattitude());
+        formSubmission.setLattitude(request.getLatitude());
         formSubmission.setLongitude(request.getLongitude());
         formSubmission.setGoogleAddress(request.getGoogleAddress());
 

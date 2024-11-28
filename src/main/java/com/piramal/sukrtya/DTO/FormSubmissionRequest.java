@@ -10,7 +10,7 @@ public class FormSubmissionRequest {
     private Integer userId;
     private Integer FormId;
     private String FacilityNIN;
-    private String Lattitude;
+    private String Latitude;
     private String Longitude;
     private String GoogleAddress;
     private List<PostAnswer> PostAnswer;
@@ -52,12 +52,12 @@ public class FormSubmissionRequest {
     }
 
     // Getter and Setter for Lattitude
-    public String getLattitude() {
-        return Lattitude;
+    public String getLatitude() {
+        return Latitude;
     }
 
-    public void setLattitude(String lattitude) {
-        this.Lattitude = lattitude;
+    public void setLatitude(String lattitude) {
+        this.Latitude = lattitude;
     }
 
     // Getter and Setter for Longitude

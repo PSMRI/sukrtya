@@ -102,6 +102,7 @@ private Map<String, String> getAnswerData(String tranid, int faqid, int formid, 
                     String faAnswers = rs.getString("faanswers");
 
                     if ("Camera".equals(questionType)) {
+                        result.put("ImgPath", faAnswers);
                         // Get the current directory
                         String currentDirectory = Paths.get("").toAbsolutePath().toString();
                         // Construct the full image path

@@ -12,6 +12,7 @@ public class QuestionResponseDTO {
     private String skipanswer;
     private int skipQuestionId;
     private String Answer;
+    private String ImgPath;
     private int AnswerID;
     private String isMandate;
     private long maxvalue;
@@ -136,5 +137,13 @@ public class QuestionResponseDTO {
     public void setMinvalue(long minvalue)
     {
         this.minvalue = minvalue;
+    }
+
+    public String getImgPath() {
+        return ImgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        ImgPath = imgPath;
     }
 }
