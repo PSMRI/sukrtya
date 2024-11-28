@@ -113,7 +113,7 @@ private Map<String, String> getAnswerData(String tranid, int faqid, int formid, 
                         String base64Image = convertImageUrlToBase64(imagePath);
 
                         logger.info("image : {}", base64Image);
-                        result.put("Answer","data:image/jpeg;base64," +base64Image);
+                        result.put("Answer",base64Image);
 
                     } else {
                         result.put("Answer", faAnswers);
@@ -139,12 +139,12 @@ private Map<String, String> getAnswerData(String tranid, int faqid, int formid, 
             // Read the image file as bytes
             File imageFile = new File(imagePath);
             if (!imageFile.exists() || !imageFile.isFile()) {
-                return "";
+                return null;
             }
             byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
 
             // Encode the byte array to Base64
-            return Base64.getEncoder().encodeToString(imageBytes);
+            return "data:image/jpeg;base64," +Base64.getEncoder().encodeToString(imageBytes);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Error converting image to Base64: " + imagePath, e);
