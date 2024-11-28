@@ -138,6 +138,9 @@ private Map<String, String> getAnswerData(String tranid, int faqid, int formid, 
         try {
             // Read the image file as bytes
             File imageFile = new File(imagePath);
+            if (!imageFile.exists() || !imageFile.isFile()) {
+                return "";
+            }
             byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
 
             // Encode the byte array to Base64
