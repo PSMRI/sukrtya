@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/assessment")
-public class FormSubmissionController {
+public class    FormSubmissionController {
     private final FormAnswerService formAnswerService;
 
 public FormSubmissionController(FormAnswerService formAnswerService) {

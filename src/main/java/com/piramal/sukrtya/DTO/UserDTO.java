@@ -11,6 +11,7 @@ public class UserDTO {
     private int approvalStatus;
     private String userType;
 
+
     public String getUserName()
     {
         return userName;
@@ -100,4 +101,6 @@ public class UserDTO {
     {
         this.userType = userType;
     }
+
+
 }
