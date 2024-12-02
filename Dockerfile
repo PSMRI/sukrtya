@@ -1,14 +1,11 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-alpine
+FROM ubuntu:latest AS build
+RUN apt-get update
+RUN apt-get install openjdk-17-jdk -y
+COPY ..
+RUN ./gradlew bootJar --no-daemon
 
-# Set the working directory in the container
-WORKDIR /app
+FROM openjdk:17-jdk-slim
+EXPOSE 8080
+COPY --from=build /build/libs/demo-1.jar aap.jar
 
-# Copy the JAR file to the container
-COPY target/spring-boot-demo-0.0.1-SNAPSHOT.jar app.jar
-
-# Expose the application port
-EXPOSE 9090
-
-# Run the JAR file
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
