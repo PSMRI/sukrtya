@@ -8,14 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/formsubmission")
+@RequestMapping("/api/assessment")
 public class FormSubmissionController {
     private final FormAnswerService formAnswerService;
 
 public FormSubmissionController(FormAnswerService formAnswerService) {
     this.formAnswerService = formAnswerService;
 }
-    @PostMapping("/saveAnswer")
+    @PostMapping("/save")
     public ResponseEntity<ApiResponse<String>> saveFormSubmission(@RequestBody FormSubmissionRequest request) {
         formAnswerService.saveOrUpdateFormSubmission(request);
         ApiResponse<String> response = new ApiResponse<>(

@@ -49,6 +49,7 @@ public class QuestionService {
                         // Assuming faqid and formid are accessible or can be derived from the question object
                         int faqid = question.getQuestionId(); // Example usage; adjust as needed
                         int formid = param; // Example usage; adjust as needed
+
                         Map<String, String> answerData = getAnswerData(tranid, faqid, formid, question.getQuestionType());
                         question.setAnswer(answerData.get("Answer"));
                         question.setAnswerID(Integer.parseInt(answerData.get("AnswerID")));
@@ -113,7 +114,7 @@ private Map<String, String> getAnswerData(String tranid, int faqid, int formid, 
 
                         logger.info("image : {}", base64Image);
                         result.put("Answer",base64Image);
-                        result.put("AnswerID", faAnswers);
+
                     } else {
                         result.put("Answer", faAnswers);
                     }
