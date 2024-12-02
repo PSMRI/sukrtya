@@ -21,7 +21,7 @@ public class LoginController {
     public ResponseEntity<?> postLogin(@RequestBody UserCredentials loginRequest) {
         UserDTO userData = loginService.getUserData(loginRequest.getUserName(), loginRequest.getPassword());
         if (userData != null) {
-            return ResponseEntity.ok(userData);
+                return ResponseEntity.ok(userData);
         } else {
             return ResponseEntity.status(401).body(new ErrorResponse("Invalid credentials"));
         }

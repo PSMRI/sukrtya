@@ -1,6 +1,6 @@
 package com.piramal.sukrtya.DTO;
 
-public class FormTranslDTO {
+public class FormTransactionDTO {
     private int formID;
     private String fromName;
     private int facilityTypeID;
