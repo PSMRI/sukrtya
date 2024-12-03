@@ -34,7 +34,7 @@ public class LoginController {
         UserDTO userData = loginService.getUserData(loginRequest.getUserName(), loginRequest.getPassword());
         if (userData != null) {
             // Generate JWT Token
-            String token = jwtUtil.generateToken(userData.getUserName(), Map.of("role", "User"));
+            String token = jwtUtil.generateToken(userData.getUserName(), Map.of("role", "ADMIN"));
 
             // Return the token along with user data
             return ResponseEntity.ok(new AuthResponse(userData, token));

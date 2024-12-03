@@ -2,6 +2,7 @@ package com.piramal.sukrtya.controller;
 
 import com.piramal.sukrtya.DTO.FacilityDetailDTO;
 import com.piramal.sukrtya.services.FacilityService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class FacilityController {
     }
 
     @GetMapping("/GetFacilityList")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<FacilityDetailDTO> getFacilityList(@RequestParam Integer UserId,
                                                    @RequestParam Integer RegLid,
                                                    @RequestParam Integer MappingUserId) {
