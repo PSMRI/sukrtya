@@ -23,7 +23,7 @@ data "aws_availability_zones" "available" {
 # appending a randomly generated string (random_string.suffix.result) to the base name SUkrtya-eks.
 #==========================================================================================
 locals {
-  cluster_name = "SUkrtya-eks-${random_string.suffix.result}"
+  cluster_name = var.cluster_name
 }
 #====******Random String Resource*******=======================================================
 #This resource generates a random string (8 characters long) that is appended to the cluster name to ensure uniqueness.
@@ -41,18 +41,25 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.8.1"
 
-  name = "SUkrtya-vpc"
+  name = var.vpc_name
 
   cidr = "10.0.0.0/16"
-  azs  = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+#   azs  = slice(data.aws_availability_zones.available.names, 0, 3)
+  # using only one availability zones
+  azs  = slice(data.aws_availability_zones.available.names, 0, 2)
+
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
+  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24"]
+
+#   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+#   public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
 
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
 
+  # why do we need subnetting for small networks, can we simplify this further?
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
   }
@@ -89,30 +96,31 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_group_defaults = {
-    ami_type = "AL2_x86_64"
-
+#     ami_type = "AL2_x86_64"
+    ami_type = var.ami_type
+#     ami_type = "Amazon Linux 2"
   }
 
   eks_managed_node_groups = {
     one = {
-      name = "node-group-1"
+      name = var.node_group_name
 
-      instance_types = ["t3.small"]
+      instance_types = [var.instance_type]
 
-      min_size     = 1
+      min_size     = 2
       max_size     = 3
       desired_size = 2
     }
 
-    two = {
-      name = "node-group-2"
-
-      instance_types = ["t3.small"]
-
-      min_size     = 1
-      max_size     = 2
-      desired_size = 1
-    }
+#     two = {
+#       name = "node-group-2"
+#
+#       instance_types = ["t3.small"]
+#
+#       min_size     = 4
+#       max_size     = 5
+#       desired_size = 4
+#     }
   }
 }
 

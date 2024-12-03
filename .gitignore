@@ -26,3 +26,10 @@ replay_pid*
 
 # project/IDE settings
 .idea
+
+
+# terraform 
+*.tfstate
+*.tfstate.*
+.terraform
+.terraform.*
