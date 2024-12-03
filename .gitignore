@@ -26,3 +26,11 @@ replay_pid*
 
 # project/IDE settings
 .idea
+*.hcl
+*.kms
+dev_ops/.terraform/modules/irsa-ebs-csi/
+dev_ops/.terraform/modules/modules.json
+*.exe
+*.txt
+dev_ops/.terraform/modules/eks/
+dev_ops/.terraform/modules/vpc/

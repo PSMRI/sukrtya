@@ -2,13 +2,13 @@
 #configurations, as well as the required version of Terraform itself.
 #============================================================================================
 terraform {
-
-  # cloud {
-  #   workspaces {
-  #     name = "SUkrtya-terraform-eks"
-  #   }
-  # }
-
+/*
+   cloud {
+    workspaces {
+      name = "SUkrtya-eks-manish_piramal"
+     }
+   }
+*/
 #===========required_providers===================================
 #The required_providers block specifies the providers that Terraform will use for your infrastructure. Providers allow Terraform to interact with different cloud platforms, services, or APIs to create, manage, and configure resources.
 #=================================================================

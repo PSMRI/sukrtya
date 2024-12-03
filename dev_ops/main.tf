@@ -23,15 +23,12 @@ data "aws_availability_zones" "available" {
 # appending a randomly generated string (random_string.suffix.result) to the base name SUkrtya-eks.
 #==========================================================================================
 locals {
-  cluster_name = "SUkrtya-eks-${random_string.suffix.result}"
+  cluster_name = "SUkrtya-eks-manish_piramal"
 }
 #====******Random String Resource*******=======================================================
 #This resource generates a random string (8 characters long) that is appended to the cluster name to ensure uniqueness.
 #===============================================================================
-resource "random_string" "suffix" {
-  length  = 8
-  special = false
-}
+
 #=============******VPC Creation*******=========================================================
 #This block creates a VPC (Virtual Private Cloud) in AWS with a CIDR block of 10.0.0.0/16 and divides it into public and private subnets.
 #It uses 3 availability zones (obtained from the previous data block) and enables NAT gateways for private subnets to access the internet.
