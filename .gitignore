@@ -34,3 +34,6 @@ dev_ops/.terraform/modules/modules.json
 *.txt
 dev_ops/.terraform/modules/eks/
 dev_ops/.terraform/modules/vpc/
+dev_ops/EKS/.terraform/modules/eks/
+dev_ops/EKS/.terraform/modules/irsa-ebs-csi/
+dev_ops/EKS/.terraform/modules/vpc/
