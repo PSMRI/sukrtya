@@ -27,12 +27,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf().disable()
+        return http
+                .cors() // Enable CORS settings from WebMvcConfigurer
+                .and()
+                .csrf().disable() // Disable CSRF (if required, especially for APIs)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/postLogin").permitAll()  // Allow access to public/authentication endpoints
-                        .anyRequest().authenticated()  // Secure other endpoints
+                        .requestMatchers("/api/postLogin", "/api/public/data").permitAll() // Public endpoints
+                        .anyRequest().authenticated() // Secure other endpoints
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT filter
                 .build();
     }
 
