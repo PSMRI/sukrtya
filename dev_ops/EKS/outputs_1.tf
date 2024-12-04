@@ -54,6 +54,3 @@ output "cluster_name" {
 #cluster_name: The name of the EKS Kubernetes cluster.
 #These outputs provide important information about the infrastructure you just created and are intended to be accessed after the Terraform apply process. You can use this information to interact with your Kubernetes cluster, manage network access, and configure various tools or services that need to reference the cluster.
 
-output "nginx_endpoint" {
-    value = "http://${data.kubernetes_service.nginx.status.0.load_balancer.0.ingress.0.hostname}"
-}
