@@ -37,3 +37,4 @@ dev_ops/.terraform/modules/vpc/
 dev_ops/EKS/.terraform/modules/eks/
 dev_ops/EKS/.terraform/modules/irsa-ebs-csi/
 dev_ops/EKS/.terraform/modules/vpc/
+dev_ops/nginix_dev/terraform.tfstate.backup

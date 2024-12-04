@@ -1,0 +1,34 @@
+After creating EKS run below command one by one
+===============================================
+
+helm install my-release bitnami/nginx
+kubectl get svc --namespace default -w my-release-nginx
+ kubectl get svc --namespace default
+
+ kubectl get svc my-release-nginx --namespace default
+ kubectl get svc my-release-nginx --namespace default -o yaml
+///==========for internal ip==============================================================
+export SERVICE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].port}" services my-release-nginx)
+export SERVICE_IP=$(kubectl get svc --namespace default my-release-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+echo "http://${SERVICE_IP}:${SERVICE_PORT}"
+///======for external Ip ======================================================
+SERVICE_IP=$(kubectl get svc my-release-nginx --namespace default -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+SERVICE_PORT=$(kubectl get svc my-release-nginx --namespace default -o jsonpath='{.spec.ports[0].port}')
+echo "http://${SERVICE_IP}:${SERVICE_PORT}"
+============================================================
+kubectl create namespace my-app
+kubectl create configmap nginx-html --from-file=index.html --namespace my-app
+kubectl apply -f nginx-deployment.yaml
+
+kubectl apply -f nginx-service.yaml
+
+kubectl port-forward svc/nginx-service 8080:80 --namespace my-app
+
+=========run this if anything chage in html file==
+kubectl create configmap nginx-html --from-file=index.html --namespace my-app --dry-run=client -o yaml | kubectl apply -f -
+
+================
+rstrat  
+kubectl delete pod -l app=nginx --namespace my-app
+
+
