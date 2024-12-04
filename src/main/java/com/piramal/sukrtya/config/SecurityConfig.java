@@ -32,7 +32,8 @@ public class SecurityConfig {
                 .and()
                 .csrf().disable() // Disable CSRF (if required, especially for APIs)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/postLogin", "/api/public/data").permitAll() // Public endpoints
+                        .requestMatchers("/api/postLogin").permitAll() // Public endpoints
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated() // Secure other endpoints
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT filter
