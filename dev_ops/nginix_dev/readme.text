@@ -1,6 +1,7 @@
 After creating EKS run below command one by one
 ===============================================
-
+change you directory to nginix_dev
+====
 helm install my-release bitnami/nginx
 kubectl get svc --namespace default -w my-release-nginx
  kubectl get svc --namespace default
