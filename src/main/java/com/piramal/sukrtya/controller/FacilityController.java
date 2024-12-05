@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("sukrtya/api")
 public class FacilityController {
     private final FacilityService facilityService;
 
@@ -15,7 +15,7 @@ public class FacilityController {
         this.facilityService = facilityService;
     }
 
-    @GetMapping("/GetFacilityList")
+    @GetMapping("/facilities")
     public List<FacilityDetailDTO> getFacilityList(@RequestParam Integer UserId,
                                                    @RequestParam Integer RegLid,
                                                    @RequestParam Integer MappingUserId) {

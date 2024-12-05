@@ -3,12 +3,14 @@ package com.piramal.sukrtya.controller;
 import com.piramal.sukrtya.DTO.FormSubmissionRequest;
 import com.piramal.sukrtya.exceptions.handler.ApiResponse;
 import com.piramal.sukrtya.services.FormAnswerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/assessment")
+@RequestMapping("sukrtya/api/assessments")
 public class FormSubmissionController {
     private final FormAnswerService formAnswerService;
 
