@@ -7,13 +7,13 @@ variable "region" {
 variable "cluster_name" {
     description = "EKS cluster name"
       type        = string
-      default     = "Sukrtya-eks-cluster"
+      default     = "Sukrtya-eks-cluster-Nilesh"
 }
 
 variable "vpc_name" {
     description = "VPC name"
       type        = string
-      default     = "Sukrtya-vpc"
+      default     = "Sukrtya-vpc-Nilesh"
 }
 
 variable "ami_type" {
