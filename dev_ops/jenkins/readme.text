@@ -1,0 +1,27 @@
+helm repo add jenkins https://charts.jenkins.io
+helm upgrade --install myjenkins jenkins/jenkins
+kubectl get secret -n default  myjenkins -o jsonpath='{.data.jenkins-admin-password}' | base64 --decode
+e3LcFtUlhhs8vgJd7kF5S2
+kubectl get secrets -n default
+
+Get the Jenkins URL to visit by running these commands in the same shell:
+  echo http://localhost:8080
+  kubectl --namespace default port-forward svc/myjenkins 8080:8080
+
+  kubectl expose svc myjenkins -n default --type=LoadBalancer --name=jenkins-lb
+service/jenkins-lb exposed
+
+helm show values jenkins/jenkins
+You may notice that Jenkins reports the following error when you access it via its public IP address:
+This can be resolved by defining the public URL in the controller.jenkinsUrl property,
+ replacing http://a2527985e91194c139cfb9e016c06095-1089937802.ap-south-1.elb.amazonaws.com with the IP address or hostname of your Jenkins instance:
+Note that the custom Docker image must have the following plugins installed in addition to any custom plugins. These plugins are required for the Helm chart to function properly:
+Install Jenkins Plugins
+=============================
+kubernetes
+workflow-aggregator
+git
+Pipeline: AWS Steps
+Docker
+docker Pipeline
+configuration-as-code
