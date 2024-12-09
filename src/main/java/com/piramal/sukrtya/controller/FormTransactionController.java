@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("sukrtya/api")
 public class FormTransactionController {
     private final FormTransactionService formTransactionService;
 
@@ -19,7 +19,7 @@ public class FormTransactionController {
         this.formTransactionService = formTransactionService;
     }
 
-    @GetMapping("/GetFormTransactionList")
+    @GetMapping("/forms")
     public List<FormTransactionDTO>  getFormTranslList(
             @RequestParam("facilytyType") int facilityType,
             @RequestParam("FacilityId") int facilityId,

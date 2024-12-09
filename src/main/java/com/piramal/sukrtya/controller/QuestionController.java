@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/questions")
+@RequestMapping("sukrtya/api")
 public class QuestionController {
     private final QuestionService questionService;
 
@@ -15,7 +15,7 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-    @GetMapping("/getQuestionDetails")
+    @GetMapping("/questions")
     public List<QuestionResponseDTO> getQuestionDetails(
             @RequestParam int formId,
             @RequestParam int RegLId,
