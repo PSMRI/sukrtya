@@ -3,8 +3,8 @@
 target
 *.java~
 # Log file
-*.log
-
+*.logs
+*./logs
 # BlueJ files
 *.ctxt
 

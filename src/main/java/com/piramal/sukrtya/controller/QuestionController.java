@@ -2,6 +2,8 @@ package com.piramal.sukrtya.controller;
 
 import com.piramal.sukrtya.DTO.QuestionResponseDTO;
 import com.piramal.sukrtya.services.QuestionService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/questions")
 public class QuestionController {
+    private static final Logger logger = LogManager.getLogger(QuestionController.class);
     private final QuestionService questionService;
 
     public QuestionController(QuestionService questionService) {
@@ -20,7 +23,14 @@ public class QuestionController {
             @RequestParam int formId,
             @RequestParam int RegLId,
             @RequestParam(required = false) String transActionId) {
+        logger.info("Received request to get question details with parameters: formId={}, RegLId={}, transActionId={}",
+                formId, RegLId, transActionId);
 
-        return questionService.getQuestionDetails(formId, transActionId);
+        List<QuestionResponseDTO> questionDetails = questionService.getQuestionDetails(formId, transActionId);
+
+        logger.info("Successfully retrieved question details for formId={}, RegLId={}, transActionId={}",
+                formId, RegLId, transActionId);
+
+        return questionDetails;
     }
 }

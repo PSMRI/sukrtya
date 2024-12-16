@@ -2,6 +2,8 @@ package com.piramal.sukrtya.controller;
 
 import com.piramal.sukrtya.DTO.FormTransactionDTO;
 import com.piramal.sukrtya.services.FormTransactionService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +15,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class FormTransactionController {
+
+    private static final Logger logger = LogManager.getLogger(FormTransactionController.class);
     private final FormTransactionService formTransactionService;
 
     public FormTransactionController(FormTransactionService formTransactionService  ) {
@@ -24,9 +28,15 @@ public class FormTransactionController {
             @RequestParam("facilytyType") int facilityType,
             @RequestParam("FacilityId") int facilityId,
             @RequestParam("RgLId") int rgLId) {
+        logger.info("Received request to get form transactions with parameters: facilityType={}, facilityId={}, rgLId={}",
+                facilityType, facilityId, rgLId);
 
         List<FormTransactionDTO> objform = formTransactionService.getFormTranslList(facilityType, facilityId, rgLId);
-        return formTransactionService.getFormTranslList(facilityType, facilityId, rgLId);
+
+        logger.info("Successfully retrieved form transactions for facilityType={}, facilityId={}, rgLId={}",
+                facilityType, facilityId, rgLId);
+
+        return objform;
     }
 
 }
