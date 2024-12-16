@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("sukrtya/api")
 public class LoginController {
     private final LoginService loginService;
 
@@ -17,7 +17,7 @@ public class LoginController {
         this.loginService = loginService;
     }
 
-    @PostMapping("/postLogin")
+    @PostMapping("/login")
     public ResponseEntity<?> postLogin(@RequestBody UserCredentials loginRequest) {
         UserDTO userData = loginService.getUserData(loginRequest.getUserName(), loginRequest.getPassword());
         if (userData != null) {
