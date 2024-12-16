@@ -1,7 +1,6 @@
 FROM ubuntu:latest AS build
 
 RUN apt-get update
-RUN apt-get install openjdk-17-jdk -y
 
 FROM maven:3.8.5-openjdk-17 AS build
 
