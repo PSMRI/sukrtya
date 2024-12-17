@@ -11,7 +11,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("sukrtya/api")
 public class FacilityController {
     private static final Logger logger = LogManager.getLogger(FacilityController.class);
     private final FacilityService facilityService;
@@ -20,8 +20,9 @@ public class FacilityController {
         this.facilityService = facilityService;
     }
 
-    @GetMapping("/GetFacilityList")
-    @PreAuthorize("hasRole('ADMIN')")
+
+    @GetMapping("/facilities")
+
     public List<FacilityDetailDTO> getFacilityList(@RequestParam Integer UserId,
                                                    @RequestParam Integer RegLid,
                                                    @RequestParam Integer MappingUserId) {

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("sukrtya/api")
 public class LoginController {
     private static final Logger logger = LogManager.getLogger(LoginController.class);
 
@@ -28,7 +28,7 @@ public class LoginController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/postLogin")
+    @PostMapping("/login")
     public ResponseEntity<?> postLogin(@RequestBody UserCredentials loginRequest) {
         logger.info("Login attempt for user: {}", loginRequest.getUserName());
 
