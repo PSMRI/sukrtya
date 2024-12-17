@@ -1,14 +1,13 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-alpine
+FROM maven:3.8.5-openjdk-17 AS build
 
-# Set the working directory in the container
-WORKDIR /app
+COPY . .
 
-# Copy the JAR file to the container
-COPY target/spring-boot-demo-0.0.1-SNAPSHOT.jar app.jar
+RUN mvn clean package -DskipTests
 
-# Expose the application port
-EXPOSE 9090
+FROM openjdk:17.0.1-jdk-slim
 
-# Run the JAR file
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY --from=build /target/sukrtya-0.0.1-SNAPSHOT.jar sukrtya.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java","-jar","sukrtya.jar"]
