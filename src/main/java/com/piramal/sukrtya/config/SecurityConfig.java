@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.disable()) // Configure CORS if necessary
                 .csrf(csrf -> csrf.disable()) // Disable CSRF (if required for APIs)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/postLogin").permitAll() // Public endpoints
+                        .requestMatchers("/sukrtya/api/login").permitAll() // Public endpoints
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated() // Secure all other endpoints
                 )

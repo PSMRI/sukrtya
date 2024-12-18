@@ -1,4 +1,4 @@
-spring.application.name=sukrtya
+spring.application.name=spring-boot-demo
 server.port=8080
 server.error.whitelabel.enabled=false
 
