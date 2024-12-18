@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: my-app-cert
+  namespace: default
+spec:
+  secretName: gs-spring-boot-k8s-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - aee343ae24ffc40a9ad7ec552c7c48a1-1113047758.ap-south-1.elb.amazonaws.com  # Replace with your domain

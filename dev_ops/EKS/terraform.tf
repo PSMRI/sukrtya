@@ -5,7 +5,7 @@ terraform {
 /*
    cloud {
     workspaces {
-      name = "SUkrtya-eks-manish_piramal"
+      name = "SUkrtya-eks-manish_piramal_1"
      }
    }
 */

@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jenkins-ingress
+  namespace: devops-tools
+  annotations:
+    kubernetes.io/ingress.class: "nginx" # Use the correct ingress class
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false" # Optional, for non-HTTPS
+spec:
+  rules:
+    - host: a10706aa844084db998c7ba184fc295d-644174605.ap-south-1.elb.amazonaws.com # Replace with your domain or omit for IP-based access
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jenkins
+                port:
+                  number: 8080

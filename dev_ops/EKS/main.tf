@@ -23,7 +23,7 @@ data "aws_availability_zones" "available" {
 # appending a randomly generated string (random_string.suffix.result) to the base name SUkrtya-eks.
 #==========================================================================================
 locals {
-  cluster_name = "SUkrtya-eks-manish_piramal"
+  cluster_name = "SUkrtya-eks-manish_piramal_1"
 }
 #====******Random String Resource*******=======================================================
 #This resource generates a random string (8 characters long) that is appended to the cluster name to ensure uniqueness.
@@ -38,7 +38,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.8.1"
 
-  name = "SUkrtya-vpc"
+  name = "SUkrtya-vp_manish_1"
 
   cidr = "10.0.0.0/16"
   azs  = slice(data.aws_availability_zones.available.names, 0, 3)

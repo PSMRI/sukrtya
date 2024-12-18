@@ -2,9 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
-  namespace: my-app
+  labels:
+    app: nginx
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: nginx
@@ -16,11 +17,5 @@ spec:
       containers:
       - name: nginx
         image: nginx:latest
-        volumeMounts:
-        - name: nginx-html
-          mountPath: /usr/share/nginx/html/index.html
-          subPath: index.html
-      volumes:
-      - name: nginx-html
-        configMap:
-          name: nginx-html
+        ports:
+        - containerPort: 80

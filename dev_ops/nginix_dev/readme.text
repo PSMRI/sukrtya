@@ -2,19 +2,19 @@ After creating EKS run below command one by one
 ===============================================
 change you directory to nginix_dev
 ====
-helm install my-release bitnami/nginx
-kubectl get svc --namespace default -w my-release-nginx
+helm install myngix bitnami/nginx
+kubectl get svc --namespace default -w myngix-nginx
  kubectl get svc --namespace default
 
- kubectl get svc my-release-nginx --namespace default
- kubectl get svc my-release-nginx --namespace default -o yaml
+ kubectl get svc myngix-nginx --namespace default
+ kubectl get svc myngix-nginx --namespace default -o yaml
 ///==========for internal ip==============================================================
-export SERVICE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].port}" services my-release-nginx)
-export SERVICE_IP=$(kubectl get svc --namespace default my-release-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export SERVICE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].port}" services myngix-nginx)
+export SERVICE_IP=$(kubectl get svc --namespace default myngix-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 echo "http://${SERVICE_IP}:${SERVICE_PORT}"
 ///======for external Ip ======================================================
-SERVICE_IP=$(kubectl get svc my-release-nginx --namespace default -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-SERVICE_PORT=$(kubectl get svc my-release-nginx --namespace default -o jsonpath='{.spec.ports[0].port}')
+SERVICE_IP=$(kubectl get svc myngix-nginx --namespace default -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+SERVICE_PORT=$(kubectl get svc myngix-nginx --namespace default -o jsonpath='{.spec.ports[0].port}')
 echo "http://${SERVICE_IP}:${SERVICE_PORT}"
 ============================================================
 kubectl create namespace my-app
@@ -31,5 +31,13 @@ kubectl create configmap nginx-html --from-file=index.html --namespace my-app --
 ================
 rstrat  
 kubectl delete pod -l app=nginx --namespace my-app
+
+
+1. Run
+
+docker login -u manish897
+2. At the password prompt, enter the personal access token.
+
+dckr_pat_xrKQZLmHJpNwFZOmr-xqkd0g7-U
 
 

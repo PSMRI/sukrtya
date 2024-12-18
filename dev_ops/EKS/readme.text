@@ -19,3 +19,12 @@ First, get information about the cluster.
 ==> kubectl cluster-info
 Now verify that all three worker nodes are part of the cluster.
 ==>kubectl get nodes
+
+Apply complete! Resources: 61 added, 5 changed, 0 destroyed.
+
+Outputs:
+
+cluster_endpoint = "https://375157334343AC3C65C8AFF57F172E31.gr7.ap-south-1.eks.amazonaws.com"     
+cluster_name = "SUkrtya-eks-manish_piramal_1"
+cluster_security_group_id = "sg-049a575f2c1bbe0ee"
+region = "ap-south-1"

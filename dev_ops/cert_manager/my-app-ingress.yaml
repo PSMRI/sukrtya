@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gs-spring-boot-k8s-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  rules:
+  - host: aee343ae24ffc40a9ad7ec552c7c48a1-1113047758.ap-south-1.elb.amazonaws.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: gs-spring-boot-k8s
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - aee343ae24ffc40a9ad7ec552c7c48a1-1113047758.ap-south-1.elb.amazonaws.com
+    secretName: gs-spring-boot-k8s-tls-7m2kd

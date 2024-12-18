@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-prod
+  namespace: default
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: msingh897@gmail.com  # Replace with your email
+    privateKeySecretRef:
+      name: letsencrypt-prod-key  # The secret where the private key will be stored
+    solvers:
+      - http01:
+          ingress:
+            class: ingress-nginx-controller  # Specify your ingress controller (e.g., nginx)

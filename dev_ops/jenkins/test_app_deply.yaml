@@ -1,0 +1,103 @@
+pipeline {
+    agent {
+        kubernetes {
+            inheritFrom 'aws-cli-docker' 
+            defaultContainer 'aws-container'  
+            yaml '''
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: jenkins
+spec:
+  containers:
+  - name: aws-container
+    image: amazonlinux:2  
+    command:
+      - cat
+    tty: true
+    volumeMounts:
+    - mountPath: /home/jenkins/.aws
+      name: aws-credentials
+    - mountPath: /var/run/docker.sock
+      name: docker-socket
+  volumes:
+  - name: aws-credentials
+    secret:
+      secretName: aws-credentials-secret  
+  - name: docker-socket
+    hostPath:
+      path: /var/run/docker.sock
+      type: Socket
+'''
+        }
+    }
+
+    environment {
+       
+        ECR_REGISTRY = "050752608385.dkr.ecr.ap-south-1.amazonaws.com"
+        ECR_REPOSITORY = "piramal/tech4gov" 
+        IMAGE_TAG = "latest" 
+        KUBE_CONFIG = "~/.kube/config" 
+    }
+
+    stages {
+     
+        stage('Login to ECR') {
+            steps {
+                withAWS(credentials: 'aws_credence', region: 'ap-south-1') {
+                    script {
+                        echo "Logging into Amazon ECR..."
+                        sh """
+                            aws ecr get-login-password --region ap-south-1 | \
+                            docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                        """
+                    }
+                }
+            }
+        }
+
+    
+        stage('Deploy to Kubernetes') {
+            steps {
+                withAWS(credentials: 'aws_credence', region: 'ap-south-1') {
+                    script {
+                        echo "Setting up Kubernetes configuration..."
+                      
+                        sh """
+                            aws eks update-kubeconfig --name SUkrtya-eks-manish_piramal --region ap-south-1
+                        """
+
+                      
+                        echo "Applying Kubernetes deployment..."
+                        sh """
+                            kubectl apply -f EKS-deployment.yaml
+                        """
+                    }
+                }
+            }
+        }
+
+       
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    echo "Checking deployment status in Kubernetes..."
+                    sh """
+                        kubectl get pods -o wide
+                    """
+                }
+            }
+        }
+    }
+
+   
+    post {
+        failure {
+            echo "Deployment failed!"
+        }
+        success {
+            echo "Deployment successful!"
+        }
+    }
+}
