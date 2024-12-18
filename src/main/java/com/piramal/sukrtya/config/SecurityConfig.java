@@ -3,6 +3,7 @@ package com.piramal.sukrtya.config;
 import com.piramal.sukrtya.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,11 +24,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.disable()) // Configure CORS if necessary
-                .csrf(csrf -> csrf.disable()) // Disable CSRF (if required for APIs)
+                .csrf(csrf -> csrf.disable()) // Disable CSRF if required for APIs
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/sukrtya/api/login").permitAll() // Public endpoints
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow OPTIONS requests (for CORS preflight)
                         .anyRequest().authenticated() // Secure all other endpoints
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
