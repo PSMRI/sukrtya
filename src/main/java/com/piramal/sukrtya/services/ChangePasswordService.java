@@ -19,12 +19,13 @@ public class ChangePasswordService {
         // Retrieve the current password hash from the database
         String currentPasswordHash = changePasswordRepository.findPasswordByUsername(username);
 
-        if (currentPasswordHash != null && passwordEncoder.matches(oldPassword, currentPasswordHash)) {
+       // if (currentPasswordHash != null && passwordEncoder.matches(oldPassword, currentPasswordHash)) {
+        if (currentPasswordHash != null && oldPassword.equals(currentPasswordHash)) {
             // Hash the new password
             String hashedNewPassword = passwordEncoder.encode(newPassword);
 
             // Update the password in the database
-            int rowsUpdated = changePasswordRepository.updatePassword(username, hashedNewPassword);
+            int rowsUpdated = changePasswordRepository.updatePassword(username, newPassword);
 
             // Return true if the update was successful
             return rowsUpdated > 0;
