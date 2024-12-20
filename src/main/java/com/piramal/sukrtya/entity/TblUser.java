@@ -31,5 +31,3 @@ public class TblUser {
     }
 }
 
-//public class TblUser {
-//}
