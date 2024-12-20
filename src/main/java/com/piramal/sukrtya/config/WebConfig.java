@@ -15,9 +15,9 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Apply to all endpoints
-                        .allowedOriginPatterns("*") // Allow all origins using patterns
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow specific methods
-                        .allowedHeaders("Authorization", "Content-Type", "X-Requested-With") // Allow all headers
+                        .allowedOriginPatterns("*") // Allow all origins
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow all methods
+                        .allowedHeaders("Authorization", "Content-Type", "X-Requested-With") // Allow specific headers
                         .allowCredentials(true); // Allow credentials (cookies, authorization headers)
             }
         };
