@@ -1,5 +1,6 @@
 package com.piramal.sukrtya.exceptions.handler;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -9,23 +10,51 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     private static final Logger logger = LogManager.getLogger(GlobalExceptionHandler.class);
 
-    // Handle all exceptions globally
+    // Handle UnauthorizedException
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ResponseEntity<ApiResponse<Object>> handleUnauthorizedException(UnauthorizedException ex) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        logError("Unauthorized access", ex, request);
+        ApiResponse<Object> response = new ApiResponse<>(
+                "error",
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    // Handle BadRequestException
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity<ApiResponse<Object>> handleBadRequestException(BadRequestException ex) {
+        logErrorBadrequest("Bad request", ex);
+        ApiResponse<Object> response = new ApiResponse<>(
+                "error",
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.badRequest().body(response);
+    }
+
+
+    // Fallback handler for all other exceptions
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public ResponseEntity<ApiResponse<Object>> handleGlobalException(Exception ex, HttpServletRequest request) {
-
-        // Log the error with request details
         logError("Unhandled exception occurred", ex, request);
-
-        // Return a standardized error response
         ApiResponse<Object> response = new ApiResponse<>(
                 "error",
                 "An unexpected error occurred. Please try again later.",
@@ -44,6 +73,10 @@ public class GlobalExceptionHandler {
         );
         logger.error("{} - {} - Exception: {}", message, requestInfo, ex.getMessage(), ex);
     }
+    private void logErrorBadrequest(String message, Exception ex) {
+        logger.error("{} - Exception: {}", message, ex.getMessage(), ex);
+    }
 }
+
 
 

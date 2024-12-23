@@ -1,10 +1,14 @@
 package com.piramal.sukrtya.controller;
 
 import com.piramal.sukrtya.DTO.AuthResponse;
+import com.piramal.sukrtya.DTO.ChangePasswordRequest;
 import com.piramal.sukrtya.DTO.UserCredentials;
 import com.piramal.sukrtya.DTO.UserDTO;
 import com.piramal.sukrtya.exceptions.handler.ApiResponse;
+import com.piramal.sukrtya.exceptions.handler.BadRequestException;
+import com.piramal.sukrtya.exceptions.handler.UnauthorizedException;
 import com.piramal.sukrtya.security.JwtUtil;
+import com.piramal.sukrtya.services.ChangePasswordService;
 import com.piramal.sukrtya.services.LoginService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,10 +26,12 @@ public class LoginController {
 
     private final LoginService loginService;
     private final JwtUtil jwtUtil; // Utility class for JWT operations
+    private final ChangePasswordService changePasswordService;
 
-    public LoginController(LoginService loginService, JwtUtil jwtUtil) {
+    public LoginController(LoginService loginService, JwtUtil jwtUtil, ChangePasswordService changePasswordService) {
         this.loginService = loginService;
         this.jwtUtil = jwtUtil;
+        this.changePasswordService = changePasswordService;
     }
 
     @PostMapping("/login")
@@ -46,6 +52,58 @@ public class LoginController {
             ApiResponse<String> errorResponse = new ApiResponse<>("error", "Invalid credentials", null);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
+    }
+//    @PostMapping("/change-password")
+//    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request,
+//                                            @RequestHeader("Authorization") String authHeader) {
+//        logger.info("Password change request initiated.");
+//
+//        // Check if the Authorization header is present and starts with "Bearer "
+//        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+//            String jwtToken = authHeader.substring(7); // Extract the token part by removing "Bearer "
+//            logger.debug("Authorization header received: {}", authHeader);
+//
+//            // Extract username from JWT token
+//            String username = jwtUtil.extractUsername(jwtToken);
+//            logger.info("Username extracted from token: {}", username);
+//
+//            // Validate new password and confirmation
+//            if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+//                logger.warn("New password and confirmation do not match for user: {}", username);
+//                return ResponseEntity.badRequest().body(
+//                        new ApiResponse<>("error", "New password and confirm password do not match", null));
+//            }
+//
+//            // Attempt to change the password
+//            boolean isPasswordChanged = changePasswordService.changePassword(username, request.getOldPassword(), request.getNewPassword());
+//            if (isPasswordChanged) {
+//                logger.info("Password changed successfully for user: {}", username);
+//                return ResponseEntity.ok(
+//                        new ApiResponse<>("success", "Password changed successfully", null));
+//            } else {
+//                logger.warn("Password change attempt failed due to incorrect old password for user: {}", username);
+//                return ResponseEntity.badRequest().body(
+//                        new ApiResponse<>("error", "Old password is incorrect", null));
+//            }
+//
+//        } else {
+//            // If the Authorization header is missing or malformed
+//            logger.error("Authorization token is missing or malformed.");
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+//                    new ApiResponse<>("error", "Authorization token is missing or malformed", null));
+//        }
+//    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse<?>> changePassword(@RequestBody ChangePasswordRequest request,
+                                                         @RequestHeader("Authorization") String authHeader) {
+        logger.info("Password change request initiated.");
+        ApiResponse<?> response = changePasswordService.validateAndChangePassword(authHeader, request);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/test/cors")
+    public String testCors() {
+        throw new UnauthorizedException("Unauthorized access: Invalid token");
     }
 
 }
