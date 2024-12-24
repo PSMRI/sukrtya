@@ -14,9 +14,9 @@ public class FormTransactionRepository {
     }
 
     public List<FormTransactionDTO> getFormTranslList(int facilityType, int facilityId, int rgLId) {
-        String sql = "SELECT * FROM get_form_data(?, ?)";
+        String sql = "SELECT * FROM get_form_data(?, ?,?)";
 
-        return jdbcTemplate.query(sql, new Object[]{facilityType, facilityId}, (rs, rowNum) -> {
+        return jdbcTemplate.query(sql, new Object[]{facilityType,rgLId, facilityId}, (rs, rowNum) -> {
             FormTransactionDTO form = new FormTransactionDTO();
             form.setFormID(rs.getInt("formid"));
             form.setFromName(rs.getString("formname"));

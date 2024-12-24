@@ -26,12 +26,12 @@ public class QuestionService {
     }
 
 
-    public List<QuestionResponseDTO> getQuestionDetails(int param, String tranid) {
-        String mainQuery = "SELECT * FROM get_question_details(?)";
+    public List<QuestionResponseDTO> getQuestionDetails(int param,Integer regLid, String tranid) {
+        String mainQuery = "SELECT * FROM get_question_details(?,?)";
 
         List<QuestionResponseDTO> questions = jdbcTemplate.query(
                 mainQuery,
-                new Object[]{param},
+                new Object[]{regLid,param},
                 (rs, rowNum) -> {
                     QuestionResponseDTO question = new QuestionResponseDTO();
                     question.setQuestionId(rs.getInt("questionid"));
@@ -59,7 +59,7 @@ public class QuestionService {
                     }
 
                     if ("Single Choice".equals(question.getQuestionType())) {
-                        question.setQuestionOptions(getOptionsForFaAnswers(question.getFaAnswers()));
+                        question.setQuestionOptions(getOptionsForFaAnswers(question.getFaAnswers(),regLid));
                     }
 
                     return question;
@@ -70,13 +70,13 @@ public class QuestionService {
     }
 
     // Helper method to fetch options based on faAnswers values
-    private List<QuestionOptionDTO> getOptionsForFaAnswers(String faAnswers) {
+    private List<QuestionOptionDTO> getOptionsForFaAnswers(String faAnswers ,Integer regLid) {
         List<QuestionOptionDTO> options = new ArrayList<>();
         for (String answerId : faAnswers.split("/")) {
-            String optionQuery = "SELECT optionid as Value, optionnameen as Text FROM public.tbloptionmaster WHERE optionid = ?";
+            String optionQuery = "SELECT optionid as Value, reption as Text FROM public.tbl_regl_option WHERE optionid = ? and regl_optionid=?";
             QuestionOptionDTO option = jdbcTemplate.queryForObject(
                     optionQuery,
-                    new Object[]{Integer.parseInt(answerId)},
+                    new Object[]{Integer.parseInt(answerId),regLid},
                     (rs, rowNum) -> {
                         QuestionOptionDTO opt = new QuestionOptionDTO();
                         opt.setValue(rs.getInt("Value"));

@@ -26,7 +26,7 @@ public class QuestionController {
         logger.info("Received request to get question details with parameters: formId={}, RegLId={}, transActionId={}",
                 formId, RegLId, transActionId);
 
-        List<QuestionResponseDTO> questionDetails = questionService.getQuestionDetails(formId, transActionId);
+        List<QuestionResponseDTO> questionDetails = questionService.getQuestionDetails(formId,RegLId, transActionId);
 
         logger.info("Successfully retrieved question details for formId={}, RegLId={}, transActionId={}",
                 formId, RegLId, transActionId);
