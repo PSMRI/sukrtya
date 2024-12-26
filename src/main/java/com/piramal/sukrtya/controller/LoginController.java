@@ -5,7 +5,6 @@ import com.piramal.sukrtya.DTO.ChangePasswordRequest;
 import com.piramal.sukrtya.DTO.UserCredentials;
 import com.piramal.sukrtya.DTO.UserDTO;
 import com.piramal.sukrtya.exceptions.handler.ApiResponse;
-import com.piramal.sukrtya.exceptions.handler.BadRequestException;
 import com.piramal.sukrtya.exceptions.handler.UnauthorizedException;
 import com.piramal.sukrtya.security.JwtUtil;
 import com.piramal.sukrtya.services.ChangePasswordService;
@@ -53,46 +52,6 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
-//    @PostMapping("/change-password")
-//    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request,
-//                                            @RequestHeader("Authorization") String authHeader) {
-//        logger.info("Password change request initiated.");
-//
-//        // Check if the Authorization header is present and starts with "Bearer "
-//        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-//            String jwtToken = authHeader.substring(7); // Extract the token part by removing "Bearer "
-//            logger.debug("Authorization header received: {}", authHeader);
-//
-//            // Extract username from JWT token
-//            String username = jwtUtil.extractUsername(jwtToken);
-//            logger.info("Username extracted from token: {}", username);
-//
-//            // Validate new password and confirmation
-//            if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-//                logger.warn("New password and confirmation do not match for user: {}", username);
-//                return ResponseEntity.badRequest().body(
-//                        new ApiResponse<>("error", "New password and confirm password do not match", null));
-//            }
-//
-//            // Attempt to change the password
-//            boolean isPasswordChanged = changePasswordService.changePassword(username, request.getOldPassword(), request.getNewPassword());
-//            if (isPasswordChanged) {
-//                logger.info("Password changed successfully for user: {}", username);
-//                return ResponseEntity.ok(
-//                        new ApiResponse<>("success", "Password changed successfully", null));
-//            } else {
-//                logger.warn("Password change attempt failed due to incorrect old password for user: {}", username);
-//                return ResponseEntity.badRequest().body(
-//                        new ApiResponse<>("error", "Old password is incorrect", null));
-//            }
-//
-//        } else {
-//            // If the Authorization header is missing or malformed
-//            logger.error("Authorization token is missing or malformed.");
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-//                    new ApiResponse<>("error", "Authorization token is missing or malformed", null));
-//        }
-//    }
 
     @PostMapping("/change-password")
     public ResponseEntity<ApiResponse<?>> changePassword(@RequestBody ChangePasswordRequest request,
