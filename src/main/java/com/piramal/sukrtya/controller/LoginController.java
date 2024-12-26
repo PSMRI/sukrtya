@@ -10,8 +10,8 @@ import com.piramal.sukrtya.exceptions.handler.UnauthorizedException;
 import com.piramal.sukrtya.security.JwtUtil;
 import com.piramal.sukrtya.services.ChangePasswordService;
 import com.piramal.sukrtya.services.LoginService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("sukrtya/api")
 public class LoginController {
-    private static final Logger logger = LogManager.getLogger(LoginController.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     private final LoginService loginService;
     private final JwtUtil jwtUtil; // Utility class for JWT operations

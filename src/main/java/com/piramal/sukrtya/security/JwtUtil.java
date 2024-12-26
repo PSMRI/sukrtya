@@ -2,8 +2,8 @@ package com.piramal.sukrtya.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -13,7 +13,7 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    private static final Logger logger = LogManager.getLogger(JwtUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
     private final Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final long expirationTime = 1000 * 60 * 60; // 1 hour
 

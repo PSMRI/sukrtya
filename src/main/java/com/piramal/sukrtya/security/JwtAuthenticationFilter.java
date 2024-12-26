@@ -1,7 +1,7 @@
 package com.piramal.sukrtya.security;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.piramal.sukrtya.exceptions.handler.ApiResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +19,7 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final Logger logger = LogManager.getLogger(JwtAuthenticationFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
