@@ -3,8 +3,7 @@
 
     <property name="LOGS" value="./logs"/>
     <property name="APP_NAME" value="sukrtya"/>
-    <property name="LOG_FILE_NAME" value="sukrtya.log"/>
-
+    <property name="LOG_FILE_NAME" value="{APP_NAME}.log"/>
 
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">
