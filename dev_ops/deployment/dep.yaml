@@ -1,45 +1,43 @@
+# Deployment Definition
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: springboot-deployment
   namespace: default
   labels:
-    app: springboot-app
-  name: springboot-deployment
+    app: springboot
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: springboot-app
+      app: springboot
   template:
     metadata:
       labels:
-        app: springboot-app
+        app: springboot
     spec:
       containers:
-      - name: my-springboot-app
-        image: t050752608385.dkr.ecr.ap-south-1.amazonaws.com/piramal/tech4gov:latest
+      - name: springboot
+        image: 050752608385.dkr.ecr.ap-south-1.amazonaws.com/piramal/tech4gov:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8085
-          name: http
-          protocol: TCP
-# service type nodeport       
+        - containerPort: 8080
 ---
+# Service Definition
 apiVersion: v1
 kind: Service
 metadata:
+  name: springboot-service
   namespace: default
   labels:
-    app: springboot-app
-    k8s-app: springboot-app
-  name: springboot-service
+    app: springboot
 spec:
+  type: LoadBalancer
+  selector:
+    app: springboot
   ports:
   - name: http
     port: 80
+    targetPort: 8080
     protocol: TCP
-    targetPort: 8085
-    nodePort: 32055
-  type: NodePort
-  selector:
-    app: springboot-app
+    nodePort: 32055  # Specify a NodePort within the allowed range (e.g., 30000-32767)

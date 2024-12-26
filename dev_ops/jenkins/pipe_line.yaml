@@ -1,0 +1,121 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_CREDENTIAL_ID = 'docker_id'
+        KUBECONFIG_CREDENTIAL_ID = 'jen_kube'
+        APP_NAME = 'springboot'
+        BRANCH_NAME = 'main'
+        PROJECT_NAME = 'kubesphere-sample-dev'
+
+        AWS_REGION = 'ap-south-1'  // Set your AWS region
+        ECR_REPOSITORY = 'piramal/tech4gov'  // Replace with your ECR repository name
+        ECR_URI = "050752608385.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}"
+    }
+
+    stages {
+        stage('Checkout SCM') {
+            steps {
+                script {
+                    sshagent(['git_yest']) {
+                        echo "=====================Git clone starts ======================================="
+                        sh '''
+                        if [ ! -d ".git" ]; then
+                            echo "Cloning repository..."
+                            git clone -b main git@github.com:psmri/sukrtya.git .
+                        else
+                            echo "Repository already cloned. Pulling latest changes..."
+                            git reset --hard
+                            git clean -fd
+                            git pull origin main
+                        fi
+                        '''
+                         echo "=====================Git clone End ======================================="
+                    }
+                }
+            }
+        }
+
+        stage('Maven Build') {
+            steps {
+                script {
+                     echo "=====================maven build starts ======================================="
+                    // Run Maven to clean and package your application
+                    sh 'mvn clean install -DskipTests'
+                     echo "=====================maven build End ======================================="
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo "======= Build the Docker image from the Dockerfile ====="
+                    sh 'docker build -f /var/lib/jenkins/workspace/auto_dep1/Dockerfile -t $APP_NAME:SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER .'
+                }
+            }
+        }
+
+        stage('Authenticate to AWS ECR') {
+            steps {
+                script {
+                    echo "======= Authenticate Docker to AWS ECR========="
+                    withCredentials([aws(credentialsId: 'aws_connect')]) {  // Make sure to replace with your AWS credentials ID
+                        sh '''
+                        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_URI
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Tag & Push Docker Image to ECR') {
+            steps {
+                script {
+                     echo "=======Taging docker image ===="
+                    sh 'docker tag $APP_NAME:SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER $ECR_URI:latest-$BUILD_NUMBER'
+                   echo "=======Push to ECR================="
+                    sh 'docker push $ECR_URI:latest-$BUILD_NUMBER'
+                    echo "=====Deploying on EKS==============="
+                    sh '''
+                   sed -i "s|image: .*|image: $ECR_URI:latest-$BUILD_NUMBER|" /deployment/deployment.yaml
+                   '''
+                    sh 'kubectl apply -f /deployment/deployment.yaml'
+                    
+                    
+                   sh 'kubectl get pods -A | grep springboot-deployment'
+
+                    // Get LoadBalancer IP or Hostname
+                    sh '''
+                    kubectl get service springboot-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+                    '''
+
+                    // Another way to get LoadBalancer details
+                    sh '''
+                    kubectl get svc springboot-service --namespace default
+                    '''
+
+                    // Extract LoadBalancer hostname and print Swagger URL
+                    sh '''
+                    echo "http://$(kubectl get service springboot-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')/swagger-ui/index.html"
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Maven build, Docker image build, and Docker image push to ECR completed successfully."
+             echo "=====================Image verification ======================================="
+            sh '''
+                   kubectl get deployment springboot-deployment -o wide
+                    '''
+          echo "=========================Image verification ======================================="
+            sh 'kubectl get pods -A | grep springboot-deployment'
+        }
+        failure {
+            echo "Build, Docker image build, or Docker push to ECR failed."
+        }
+    }
+}

@@ -1,5 +1,5 @@
-$ kubectl create deployment gs-spring-boot-k8s --image spring-k8s/spring-k8s/hello-spring-k8s:latest -o yaml --dry-run=client > deployment.yaml
-$ kubectl create service clusterip gs-spring-boot-k8s --tcp 80:8080 -o yaml --dry-run=client > service.yaml
+$ kubectl create deployment springboot-deployment --image 050752608385.dkr.ecr.ap-south-1.amazonaws.com/piramal/tech4gov:latest-007 -o yaml --dry-run=client > /deployment/deployment.yaml
+$ kubectl create service clusterip springboot-service --tcp 80:8080 -o yaml --dry-run=client > /deployment/springservice.yaml
 $ kubectl apply -f deployment.yaml
 $ kubectl apply -f service.yaml
 $ kubectl port-forward svc/gs-spring-boot-k8s 9090:80
