@@ -15,8 +15,11 @@ import java.util.Map;
 @RequestMapping("sukrtya/api/language-labels")
 public class LanguageLabelsController {
 
-    @Autowired
-    private LanguageLabelsService languageLabelsService;
+    private final LanguageLabelsService languageLabelsService;
+
+    public LanguageLabelsController(LanguageLabelsService languageLabelsService) {
+        this.languageLabelsService = languageLabelsService;
+    }
 
     @GetMapping("/getLabels")
     public ResponseEntity<List<Map<String, String>>> getLabels(
