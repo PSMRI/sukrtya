@@ -3,7 +3,7 @@
 target
 *.java~
 # Log file
-*.logs
+*.log
 *./logs
 logs
 # BlueJ files
@@ -27,3 +27,4 @@ replay_pid*
 
 # project/IDE settings
 .idea
+*.log
