@@ -11,8 +11,12 @@ import java.util.Map;
 @Service
 public class LanguageLabelsService {
 
-    @Autowired
-    private LanguageLabelsRepository languageLabelsRepository;
+
+    private final LanguageLabelsRepository languageLabelsRepository;
+
+    public LanguageLabelsService(LanguageLabelsRepository languageLabelsRepository) {
+        this.languageLabelsRepository = languageLabelsRepository;
+    }
 
     public List<Map<String, String>> getLabelsInCustomFormat(int formId, int regLId) {
         List<Object[]> rawLabels = languageLabelsRepository.findLabelIdAndLabelByFormIdAndRegLId(formId, regLId);
