@@ -2,6 +2,8 @@ package com.piramal.sukrtya.entity;
 
 import jakarta.persistence.*;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table(name = "tblformtransactions")
 public class TblFormTransactions {
@@ -29,6 +31,15 @@ public class TblFormTransactions {
 
     @Column(name = "googleaddress")
     private String googleAddress;
+
+    @Column(name = "approvedby")
+    private String approvedBy;
+
+    @Column(name = "approveddate")
+    private String approvedDate;
+
+    @Column(name = "F7")
+    private String approvalStatus;
 
     public Integer getFormId() {
         return formId;
@@ -84,5 +95,33 @@ public class TblFormTransactions {
 
     public void setGoogleAddress(String googleAddress) {
         this.googleAddress = googleAddress;
+    }
+
+
+
+
+
+    public String getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(String approvalStatus) {
+        this.approvalStatus = approvalStatus;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(String approvedDate) {
+        this.approvedDate = approvedDate;
     }
 }
