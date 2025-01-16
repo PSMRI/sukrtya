@@ -15,6 +15,7 @@ public class FormTransactionDTO {
     private String lon;
     private String gaddress;
     private int approvalStatus;
+    private String username;
 
     public int getFormID()
     {
@@ -149,6 +150,14 @@ public class FormTransactionDTO {
 
     public void setGaddress(String gaddress) {
         this.gaddress = gaddress;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
 

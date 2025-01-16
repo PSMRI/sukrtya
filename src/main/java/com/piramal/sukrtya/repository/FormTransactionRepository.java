@@ -32,6 +32,7 @@ public class FormTransactionRepository {
             form.setLat(rs.getString("latitude"));
             form.setLon(rs.getString("longitude"));
             form.setGaddress(rs.getString("googleaddress"));
+            form.setUsername(rs.getString("username"));
             return form;
         });
     }

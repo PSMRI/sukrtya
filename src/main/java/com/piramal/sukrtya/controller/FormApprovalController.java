@@ -2,6 +2,7 @@ package com.piramal.sukrtya.controller;
 
 import com.piramal.sukrtya.DTO.AuditRequestDto;
 import com.piramal.sukrtya.DTO.UpdateFormApprovalDTO;
+import com.piramal.sukrtya.exceptions.handler.ApiResponse;
 import com.piramal.sukrtya.services.AuditService;
 import com.piramal.sukrtya.services.FormApprovalService;
 import org.springframework.http.HttpStatus;
@@ -20,26 +21,23 @@ public class FormApprovalController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<String> updateFormApproval(@RequestBody UpdateFormApprovalDTO updateFormApprovalDTO) {
-        try {
-            boolean isUpdated = formApprovalService.updateFormApproval(updateFormApprovalDTO);
-            if (isUpdated) {
-                return ResponseEntity.ok("Form approval updated successfully.");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Form approval not found.");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+    public ResponseEntity<ApiResponse<Void>> updateFormApproval(@RequestBody UpdateFormApprovalDTO updateFormApprovalDTO) {
+        boolean isUpdated = formApprovalService.updateFormApproval(updateFormApprovalDTO);
+        if (isUpdated) {
+            return ResponseEntity.ok(new ApiResponse<>("success", "Form approval updated successfully.", null));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>("error", "Form approval not found.", null));
         }
     }
-    @PostMapping("/AuditTrail")
-    public ResponseEntity<SuccessStatus> postAuditTrail(@RequestBody AuditRequestDto auditRequestDto) {
-
+    @PostMapping("/auditTrail")
+    public ResponseEntity<ApiResponse<Void>> postAuditTrail(@RequestBody AuditRequestDto auditRequestDto) {
         // Insert into Audit Trail
         auditService.auditTrailInsert(
                 auditRequestDto.getActionId(),
                 auditRequestDto.getDescription(),
-                auditRequestDto.getCreatedBy()
+                auditRequestDto.getCreatedBy(),
+                auditRequestDto.getTransactionId()
         );
 
         // Insert into Action Transactions
@@ -48,22 +46,6 @@ public class FormApprovalController {
                 auditRequestDto.getTransactionId()
         );
 
-        SuccessStatus successStatus = new SuccessStatus("Success");
-        return ResponseEntity.ok(successStatus);
-    }
-    public static class SuccessStatus {
-        private String success;
-
-        public SuccessStatus(String success) {
-            this.success = success;
-        }
-
-        public String getSuccess() {
-            return success;
-        }
-
-        public void setSuccess(String success) {
-            this.success = success;
-        }
+        return ResponseEntity.ok(new ApiResponse<>("success", "Audit trail recorded successfully.", null));
     }
 }
