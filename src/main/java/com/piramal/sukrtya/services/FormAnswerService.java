@@ -30,7 +30,7 @@ public class FormAnswerService {
         // Generate Transaction ID if null
         String transactionId = request.getTransactionId();
         if (transactionId == null || transactionId.isEmpty()) {
-            transactionId = generateTransactionId(request.getFacilityNIN());
+            transactionId = generateTransactionId(request.getFacilityNIN(),request.getFormId().toString());
             request.setTransactionId(transactionId);
         }
 
@@ -69,11 +69,11 @@ public class FormAnswerService {
             faAnswersRepository.save(faAnswer);
         }
     }
-    private String generateTransactionId(String nin) {
+    private String generateTransactionId(String nin,String formid) {
         LocalDateTime now = LocalDateTime.now();
         String month = String.format("%02d", now.getMonthValue());
         String yearLastTwoDigits = String.valueOf(now.getYear()).substring(2);
-        return nin + month + yearLastTwoDigits;
+        return nin + month + yearLastTwoDigits+formid;
     }
     private String saveImage(String base64Image, String transactionId, Integer formId, Integer questionId) {
         try {

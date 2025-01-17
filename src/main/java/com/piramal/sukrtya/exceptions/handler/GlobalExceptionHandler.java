@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
         logError("Unhandled exception occurred", ex, request);
         ApiResponse<Object> response = new ApiResponse<>(
                 "error",
-                "An unexpected error occurred. Please try again later.",
+                "An unexpected error occurred. Please try again later."+ex.getMessage(),
                 null
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
