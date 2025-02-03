@@ -29,6 +29,10 @@ public class FormTransactionRepository {
             form.setApprovedDate(rs.getString("approveddate"));
             form.setTransactionId(rs.getString("transactionid"));
             form.setApprovalStatus(rs.getInt("f7"));
+            form.setLat(rs.getString("latitude"));
+            form.setLon(rs.getString("longitude"));
+            form.setGaddress(rs.getString("googleaddress"));
+            form.setUsername(rs.getString("username"));
             return form;
         });
     }

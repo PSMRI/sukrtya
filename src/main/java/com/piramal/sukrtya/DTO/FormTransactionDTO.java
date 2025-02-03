@@ -11,7 +11,11 @@ public class FormTransactionDTO {
     private String approvedBy;
     private String approvedDate;
     private String transactionId;
+    private String lat;
+    private String lon;
+    private String gaddress;
     private int approvalStatus;
+    private String username;
 
     public int getFormID()
     {
@@ -121,6 +125,39 @@ public class FormTransactionDTO {
     public void setApprovalStatus(int approvalStatus)
     {
         this.approvalStatus = approvalStatus;
+    }
+
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
+    public String getGaddress() {
+        return gaddress;
+    }
+
+    public void setGaddress(String gaddress) {
+        this.gaddress = gaddress;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
 
