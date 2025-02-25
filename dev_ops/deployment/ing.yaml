@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: multi-service-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"  # Enable SSL redirection
+spec:
+  ingressClassName: alb
+  rules:
+  - host: awsui.shsbihar.in
+    http:
+      paths:
+      - path: /  
+        pathType: Prefix
+        backend:
+          service:
+            name: ui-service
+            port:
+              number: 80
+  - host: awsapi.shsbihar.in
+    http:
+      paths:
+      - path: /  
+        pathType: Prefix
+        backend:
+          service:
+            name: springboot-service
+            port:
+              number: 80
+  - host: aws.shsbihar.in
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ingress-nginx  # Replace with your NGINX service name
+            port:
+              number: 80  # Replace with NGINX service port if different

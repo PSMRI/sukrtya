@@ -1,0 +1,39 @@
+# Use an official OpenJDK runtime as a parent image
+FROM node:20.17.0-alpine AS builder
+
+# Set the working directory in the container
+WORKDIR /build
+
+# Copy the JAR file to the container
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+
+RUN npm install -g npm@11.0.0
+
+COPY . .
+
+RUN npm run build
+
+FROM node:20.17.0-alpine AS runner
+
+WORKDIR /app
+
+COPY --from=builder /build/node_modules node_modules/
+COPY --from=builder /build/package.json package.json
+COPY --from=builder /build/package-lock.json package-lock.json
+COPY --from=builder /build/build ./build/
+
+#COPY --from=builder /build/build ./public/
+#COPY --from=builder /build/src ./src/
+
+CMD [ "npm","start" ]
+#docker run -it ui-app-13  /bin/sh
+#kubectl logs ui-deployment-95844f58f-7w92f
+#kubectl delete deployment ui-deployment
+#kubectl delete svc ui-service
+#cd /var/lib/jenkins/workspace/
+
+#docker system prune -a --volumes
+#docker container prune
+#docker image prune -a
+#docker volume prune

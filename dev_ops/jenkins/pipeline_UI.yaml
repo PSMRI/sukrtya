@@ -1,0 +1,93 @@
+pipeline {
+    agent any
+
+    environment {
+        // AWS ECR Configuration
+        AWS_DEFAULT_REGION = 'ap-south-1'
+        ECR_REPO = 'piramal/tech4gov'
+        IMAGE_TAG = "ui-app:${env.BUILD_ID}"
+        ECR_URI = "050752608385.dkr.ecr.${AWS_REGION}.amazonaws.com/piramal/tech4gov"
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                script {
+                    sshagent(['git_yest']) {
+                        echo "=====================Git clone starts ======================================="
+                        sh '''
+                        if [ ! -d ".git" ]; then
+                            echo "Cloning repository..."
+                            git clone -b main git@github.com:psmri/sukrtya.git .
+                        else
+                            echo "Repository already cloned. Pulling latest changes..."
+                            git reset --hard
+                            git clean -fd
+                            git pull origin main
+                        fi
+                        '''
+                         echo "=====================Git clone End ======================================="
+                    }
+                }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build Docker image
+                    sh '''
+                    docker build -t ${IMAGE_TAG} .
+                    '''
+                }
+            }
+        }
+
+        stage('Login to ECR') {
+            steps {
+                script {
+                    // Login to Amazon ECR using AWS CLI
+                    withCredentials([aws(credentialsId: 'aws_connect')])
+                    sh '''
+                    $(aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_URI})
+                    '''
+                }
+            }
+        }
+
+        stage('Push Docker Image to ECR') {
+            steps {
+                script {
+                    // Tag the image and push it to ECR
+                    sh '''
+                    docker tag ${IMAGE_TAG} ${ECR_URI}:${IMAGE_TAG}
+                    docker push ${ECR_URI}:${IMAGE_TAG}
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Use the Kubernetes credentials stored in Jenkins (assumed 'KUBE_CONFIG' credentials)
+                    withCredentials([kubernetesConfigFile(credentialsId: 'jen_kube')]) {
+                        // Deploy the application to Kubernetes using the provided kubeconfig credentials
+                        sh '''
+                        kubectl apply -f deployment.yaml
+                        kubectl apply -f service.yaml
+                        '''
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Deployment to Kubernetes was successful!'
+        }
+        failure {
+            echo 'Deployment failed.'
+        }
+    }
+}

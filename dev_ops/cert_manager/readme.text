@@ -9,3 +9,21 @@ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/do
 
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace
+=========================Cert manager installetion in EKS==========================
+=>helm repo add jetstack https://charts.jetstack.io
+helm repo update
+kubectl create namespace cert-manager
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --version v1.11.0 \
+  --set installCRDs=true
+
+  =>kubectl get pods --namespace cert-manager
+Create a YAML file (e.g., letsencrypt-clusterissuer.yaml)
+kubectl apply -f letsencrypt-clusterissuer.yaml
+kubectl describe clusterissuer letsencrypt-prod
+
+
+
+
+
