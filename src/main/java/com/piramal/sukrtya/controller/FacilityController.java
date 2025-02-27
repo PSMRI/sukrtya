@@ -22,6 +22,7 @@ public class FacilityController {
 
     @GetMapping("/facilities")
 
+    
     public List<FacilityDetailDTO> getFacilityList(@RequestParam Integer UserId,
                                                    @RequestParam Integer RegLid,
                                                    @RequestParam Integer MappingUserId) {
