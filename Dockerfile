@@ -6,7 +6,7 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:17.0.1-jdk-slim
 
-COPY --from=build /target/sukrtya-1.0.jar sukrtya.jar
+COPY --from=build /target/sukrtya-1.1.jar sukrtya.jar
 
 EXPOSE 8080
 
