@@ -60,6 +60,12 @@ public class LoginController {
         ApiResponse<?> response = changePasswordService.validateAndChangePassword(authHeader, request);
         return ResponseEntity.ok(response);
     }
+    @PostMapping("/get-profile")
+    public ResponseEntity<ApiResponse<?>> getProfile(@RequestHeader("Authorization") String authHeader) {
+        ApiResponse<?> response = changePasswordService.getProfile(authHeader);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/test/cors")
     public String testCors() {
         throw new UnauthorizedException("Unauthorized access: Invalid token");
