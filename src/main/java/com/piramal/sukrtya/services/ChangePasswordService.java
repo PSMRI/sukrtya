@@ -77,17 +77,4 @@ public class ChangePasswordService {
 
         return false;
     }
-
-
-
-    public ApiResponse<?> getProfile(String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new UnauthorizedException("Authorization token is missing or malformed");
-        }
-        String jwtToken = authHeader.substring(7); // Extract the token part by removing "Bearer "
-        String username = jwtUtil.extractUsername(jwtToken);
-
-        return new ApiResponse<>("success", username, null);
-    }
-
 }
