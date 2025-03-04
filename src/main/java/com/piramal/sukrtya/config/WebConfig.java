@@ -1,6 +1,7 @@
 package com.piramal.sukrtya.config;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -8,17 +9,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig {
-
+    @Value("${app.base.url}")
+    private String baseUrl;
     @Bean
     public WebMvcConfigurer corsConfigurer() {
+
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Apply to all endpoints
-                        .allowedOriginPatterns("*") // Allow all origins
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow all methods
+                        .allowedOrigins(baseUrl,"https://sukrtya.in","https://ui.sukrtya.in","https://sukrtya.ui.nitag.in","http://localhost:3000","https://localhost:3000") // Replace with your frontend URL
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allowed HTTP methods
                         .allowedHeaders("Authorization", "Content-Type", "X-Requested-With") // Allow specific headers
-                        .allowCredentials(true); // Allow credentials (cookies, authorization headers)
+                        .allowCredentials(false); // Allow credentials (e.g., cookies)
             }
         };
     }
