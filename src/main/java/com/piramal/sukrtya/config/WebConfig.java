@@ -9,8 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig {
-   // @Value("${app.base.url}")
-   // private String baseUrl;
+
     @Bean
     public WebMvcConfigurer corsConfigurer() {
 
