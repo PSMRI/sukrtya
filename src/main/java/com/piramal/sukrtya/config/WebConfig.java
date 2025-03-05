@@ -20,8 +20,8 @@ public class WebConfig {
                 registry.addMapping("/**") // Apply to all endpoints
                         .allowedOrigins("https://ui.sukrtya.in/","https://api.sukrtya.in/") // Replace with your frontend URL
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allowed HTTP methods
-                        .allowedHeaders("Authorization", "Content-Type", "X-Requested-With") // Allow specific headers
-                        .allowCredentials(false); // Allow credentials (e.g., cookies)
+                        .allowedHeaders("*") // Allow specific headers
+                        .allowCredentials(true); // Allow credentials (e.g., cookies)
             }
         };
     }
