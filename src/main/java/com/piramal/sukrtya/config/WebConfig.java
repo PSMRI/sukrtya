@@ -17,7 +17,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Apply to all endpoints
-                        .allowedOrigins("https://ui.sukrtya.in/","https://api.sukrtya.in/","http://localhost:3000","https://localhost:3000") // Replace with your frontend URL
+                        .allowedOrigins("https://ui.sukrtya.in","https://api.sukrtya.in","http://localhost:3000","https://localhost:3000") // Replace with your frontend URL
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allowed HTTP methods                        
                         .allowCredentials(true); // Allow credentials (e.g., cookies)
             }
