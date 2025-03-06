@@ -19,7 +19,8 @@ public class WebConfig {
                         .allowedOrigins("*") // Allow specific origin
                         .allowedMethods("GET", "POST", "PUT", "DELETE") // Allow specific methods
                         .allowedHeaders("*") ;// Allow all headers
-                     // .allowCredentials(true); // Allow credentials
+                        .exposedHeaders("Authorization", "Content-Type") // Expose necessary headers
+                        .allowCredentials(true); // Allow credentials
             }
         };
     }
