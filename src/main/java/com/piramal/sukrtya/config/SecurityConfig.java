@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/sukrtya/api/login","/actuator/health").permitAll() // Public endpoints
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/sukrtya/api/language-labels/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow OPTIONS requests (for CORS preflight)
+                        .requestMatchers("/ws/**", "/ws").permitAll() // Allow WebSockets
                         .anyRequest().authenticated() // Secure all other endpoints
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
