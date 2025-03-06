@@ -15,12 +15,12 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Apply to all endpoints
-                       // .allowedOrigins("https://ui.sukrtya.in") // Allow specific origin
+                       .allowedOrigins("https://ui.sukrtya.in","wss://ui.sukrtya.in") // Allow specific origin
                         .allowedOrigins("*") // Allow specific origin
                         .allowedMethods("GET", "POST", "PUT", "DELETE") // Allow specific methods
                         .allowedHeaders("*") ;// Allow all headers
                         .exposedHeaders("Authorization", "Content-Type") // Expose necessary headers
-                        .allowCredentials(true); // Allow credentials
+                        //.allowCredentials(true); // Allow credentials
             }
         };
     }
