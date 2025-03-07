@@ -24,13 +24,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF if required for APIs
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for API endpoints
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/sukrtya/api/login").permitAll() // Public endpoints
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/sukrtya/api/language-labels/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow OPTIONS requests (for CORS preflight)
+                        .requestMatchers("/sukrtya/api/login", "/actuator/health").permitAll() // Public endpoints
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/sukrtya/api/language-labels/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow CORS preflight
+                        .requestMatchers(HttpMethod.GET, "/ws/**", "/ws").permitAll() // Explicitly allow WebSockets
                         .anyRequest().authenticated() // Secure all other endpoints
                 )
+                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // Allow WebSockets in iframes
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
