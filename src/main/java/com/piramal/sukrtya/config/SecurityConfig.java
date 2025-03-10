@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,12 +25,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for API endpoints
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for API endpoints
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/sukrtya/api/login", "/actuator/health").permitAll() // Public endpoints
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/sukrtya/api/language-labels/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow CORS preflight
-                        .requestMatchers(HttpMethod.GET, "/ws/**", "/ws").permitAll() // Explicitly allow WebSockets
+//                        .requestMatchers(HttpMethod.GET, "/ws/**", "/ws").permitAll() // Explicitly allow WebSockets
                         .anyRequest().authenticated() // Secure all other endpoints
                 )
                 .headers(headers -> headers.frameOptions(frame -> frame.disable())) // Allow WebSockets in iframes
