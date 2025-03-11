@@ -19,3 +19,5 @@ services:
       - SPRING_APPLICATION_NAME=sukrtya-104
     volumes:
       - ./logs:/app/logs
+
+# 192.168.20.18
