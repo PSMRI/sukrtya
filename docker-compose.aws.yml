@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://aac7be395c6a440a5be9a4d8dd453fca-1739214222.ap-south-1.elb.amazonaws.com/sukrtya
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=wdZbIZF0Ag
+      - SERVER_PORT=8080
+      - SPRING_APPLICATION_NAME=sukrtya-aws
+    volumes:
+      - /var/log/sukrtya:/app/logs 
