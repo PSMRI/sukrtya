@@ -11,7 +11,7 @@ spring.datasource.url=jdbc:postgresql://db.sukrtya.in:5432/SUkrtya
 spring.datasource.username=postgres
 #spring.datasource.password=Psmri@2024
 #spring.datasource.password=1gZ3UY1Xht
-spring.datasource.password=Zltj6ghj6J
+spring.datasource.password=wdZbIZF0Ag
 ## Optional: JPA/Hibernate properties
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
