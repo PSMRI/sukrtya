@@ -12,8 +12,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -31,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/sukrtya/api/language-labels/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow CORS preflight
 //                        .requestMatchers(HttpMethod.GET, "/ws/**", "/ws").permitAll() // Explicitly allow WebSockets
+                        .requestMatchers("/api/logs", "/api/logs/html").permitAll()
                         .anyRequest().authenticated() // Secure all other endpoints
                 )
                 .headers(headers -> headers.frameOptions(frame -> frame.disable())) // Allow WebSockets in iframes
