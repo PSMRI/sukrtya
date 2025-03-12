@@ -2,47 +2,88 @@
 <configuration>
 
     <property name="LOGS" value="./logs"/>
-    <property name="APP_NAME" value="sukrtya"/>
-    <property name="LOG_FILE_NAME" value="{APP_NAME}.log"/>
+    <property name="APP_NAME" value="${spring.application.name:-sukrtya}"/>
+
+    <!-- Set timezone to local system time -->
+    <property name="TIMEZONE" value="Asia/Kolkata"/>
+
+    <!-- Set default timezone for the JVM -->
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
 
     <appender name="Console"
               class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>
-                %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1}.%M:%L): %msg%n%throwable
-            </Pattern>
-        </layout>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS, ${TIMEZONE}} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
     </appender>
 
     <appender name="RollingFile"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/${LOG_FILE_NAME}</file>
+        <file>${LOGS}/${APP_NAME}.log</file>
         <encoder
                 class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%d %p %C{1} [%t] %m%n</Pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS, ${TIMEZONE}} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
 
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${LOGS}/archived/${APP_NAME}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxHistory>10</maxHistory>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFileNamingAndTriggeringPolicy">
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <fileNamePattern>${LOGS}/${APP_NAME}-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
+    </appender>
+
+    <appender name="HtmlFile"
+              class="ch.qos.logback.core.FileAppender">
+        <file>${LOGS}/${APP_NAME}.html</file>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.html.HTMLLayout">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS, ${TIMEZONE}}%thread%level%logger%msg</pattern>
+                <timeZone>${TIMEZONE}</timeZone>
+                <!-- Custom CSS for responsive table -->
+                <head>
+                    <style>
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; padding: 20px; }
+                        h1 { margin-bottom: 20px; color: #333; }
+                        .table-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 20px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); border-radius: 8px; }
+                        table { width: 100%; border-collapse: collapse; background: white; }
+                        table, td, th { border: none; }
+                        th { background: #f8f9fa; position: sticky; top: 0; z-index: 1; }
+                        th, td { padding: 12px; text-align: left; white-space: nowrap; min-width: 100px; }
+                        td { border-top: 1px solid #eee; }
+                        tr:nth-child(even) { background-color: #f8f9fa; }
+                        tr:hover { background-color: #f2f2f2; }
+                        .level { font-weight: bold; }
+                        .ERROR { color: #dc3545; }
+                        .WARN { color: #ffc107; }
+                        .INFO { color: #17a2b8; }
+                        .DEBUG { color: #28a745; }
+                        .TRACE { color: #6c757d; }
+                        @media (max-width: 768px) {
+                            body { padding: 10px; }
+                            .table-container { margin: -10px; border-radius: 0; }
+                            th, td { padding: 8px; font-size: 14px; }
+                            td:before { content: attr(data-label); font-weight: bold; display: block; }
+                        }
+                    </style>
+                </head>
+            </layout>
+        </encoder>
     </appender>
 
     <!-- LOG everything at INFO level -->
     <root level="info">
-        <appender-ref ref="RollingFile"/>
         <appender-ref ref="Console"/>
+        <appender-ref ref="RollingFile"/>
+        <appender-ref ref="HtmlFile"/>
     </root>
 
-    <logger name="com.piramal.sukrtya" level="debug" additivity="false">
-        <appender-ref ref="RollingFile"/>
+    <logger name="com.piramal.sukrtya" level="DEBUG" additivity="false">
         <appender-ref ref="Console"/>
+        <appender-ref ref="RollingFile"/>
+        <appender-ref ref="HtmlFile"/>
     </logger>
 
 </configuration>

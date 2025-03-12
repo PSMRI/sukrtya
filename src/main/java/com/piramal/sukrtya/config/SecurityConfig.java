@@ -7,12 +7,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -24,13 +27,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF if required for APIs
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for API endpoints
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/sukrtya/api/login").permitAll() // Public endpoints
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/sukrtya/api/language-labels/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow OPTIONS requests (for CORS preflight)
+                        .requestMatchers("/sukrtya/api/login", "/actuator/health").permitAll() // Public endpoints
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/sukrtya/api/language-labels/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow CORS preflight
+//                        .requestMatchers(HttpMethod.GET, "/ws/**", "/ws").permitAll() // Explicitly allow WebSockets
+                        .requestMatchers("/api/logs", "/api/logs/html").permitAll()
                         .anyRequest().authenticated() // Secure all other endpoints
                 )
+                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // Allow WebSockets in iframes
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

@@ -1,13 +1,22 @@
-FROM maven:3.8.5-openjdk-17 AS build
+FROM openjdk:21-slim
 
-COPY . .
+WORKDIR /app
 
-RUN mvn clean package -DskipTests
+# Copy the JAR file
+COPY target/*.jar app.jar
 
-FROM openjdk:17.0.1-jdk-slim
+# Environment variables with default values
+ENV SPRING_DATASOURCE_URL=jdbc:${SPRING_DATASOURCE_URL}
+ENV SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+ENV SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+ENV SERVER_PORT=${SERVER_PORT}
+ENV SPRING_APPLICATION_NAME=${SPRING_APPLICATION_NAME}
 
-COPY --from=build /target/sukrtya-1.0.jar sukrtya.jar
+# Create logs directory
+RUN mkdir -p /app/logs
 
-EXPOSE 8080
+# Expose the port
+EXPOSE ${SERVER_PORT}
 
-ENTRYPOINT ["java","-jar","sukrtya.jar"]
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

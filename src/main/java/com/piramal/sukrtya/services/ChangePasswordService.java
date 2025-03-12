@@ -77,9 +77,6 @@ public class ChangePasswordService {
 
         return false;
     }
-
-
-
     public ApiResponse<?> getProfile(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new UnauthorizedException("Authorization token is missing or malformed");
@@ -89,5 +86,4 @@ public class ChangePasswordService {
 
         return new ApiResponse<>("success", username, null);
     }
-
 }

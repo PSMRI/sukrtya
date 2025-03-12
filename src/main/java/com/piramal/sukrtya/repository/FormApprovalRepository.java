@@ -13,7 +13,7 @@ public interface FormApprovalRepository extends JpaRepository<TblFormTransaction
 
     @Modifying
     @Transactional
-    @Query("UPDATE TblFormTransactions t SET t.approvedBy = :userId, t.approvedDate = TO_CHAR(CURRENT_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS'), t.approvalStatus = :approvalStatus WHERE t.formId = :formId AND t.transactionId = :transactionId")
+    @Query(value = "UPDATE tblformtransactions t SET t.approvedby = :userId, t.approveddate = TO_CHAR(CURRENT_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS'), t.F7 = :approvalStatus WHERE t.formid = :formId AND t.transactionid = :transactionId", nativeQuery = true)
     int updateFormApproval(@Param("userId") Long userId,
                            @Param("approvalStatus") String approvalStatus,
                            @Param("formId") Integer formId,
