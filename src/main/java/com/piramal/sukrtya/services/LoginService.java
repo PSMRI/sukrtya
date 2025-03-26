@@ -34,6 +34,7 @@ public class LoginService {
                 user.setProfilePhoto(rs.getString("profilephoto"));
                 user.setApprovalStatus(rs.getInt("approvalstatus"));
                 user.setUserType(rs.getString("usertype"));
+                user.setAssessmentID(rs.getInt("assessmentid"));
                 return user;
             }
         });

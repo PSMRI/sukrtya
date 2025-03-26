@@ -16,8 +16,8 @@ public class FormTransactionService {
         this.repository = repository;
     }
 
-    public List<FormTransactionDTO> getFormTranslList(int facilityType, int facilityId, int rgLId) {
-        return repository.getFormTranslList(facilityType, facilityId, rgLId);
+    public List<FormTransactionDTO> getFormTranslList(int facilityType, int facilityId, int rgLId,int assesmentId) {
+        return repository.getFormTranslList(facilityType, facilityId, rgLId,assesmentId);
     }
 }
 

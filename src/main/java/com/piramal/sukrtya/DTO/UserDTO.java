@@ -10,7 +10,7 @@ public class UserDTO {
     private String profilePhoto;
     private int approvalStatus;
     private String userType;
-
+    private int assessmentID;
 
     public String getUserName()
     {
@@ -103,4 +103,11 @@ public class UserDTO {
     }
 
 
+    public int getAssessmentID() {
+        return assessmentID;
+    }
+
+    public void setAssessmentID(int assessmentID) {
+        this.assessmentID = assessmentID;
+    }
 }

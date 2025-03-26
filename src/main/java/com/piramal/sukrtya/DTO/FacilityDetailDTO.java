@@ -25,6 +25,7 @@ public class FacilityDetailDTO {
     private String blockName;
     private Integer facilityStateIdDuplicated;
     private Integer isSelected;
+    private Integer assessmentId;
 
     public Integer getFacilityBlockId()
     {
@@ -264,5 +265,13 @@ public class FacilityDetailDTO {
     public void setIsSelected(Integer isSelected)
     {
         this.isSelected = isSelected;
+    }
+
+    public Integer getAssessmentId() {
+        return assessmentId;
+    }
+
+    public void setAssessmentId(Integer assessmentId) {
+        this.assessmentId = assessmentId;
     }
 }
