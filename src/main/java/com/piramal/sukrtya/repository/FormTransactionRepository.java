@@ -13,10 +13,10 @@ public class FormTransactionRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<FormTransactionDTO> getFormTranslList(int facilityType, int facilityId, int rgLId) {
-        String sql = "SELECT * FROM get_form_data(?, ?,?)";
+    public List<FormTransactionDTO> getFormTranslList(int facilityType, int facilityId, int rgLId,int assesmentId) {
+        String sql = "SELECT * FROM get_form_data(?, ?,?,?)";
 
-        return jdbcTemplate.query(sql, new Object[]{facilityType,rgLId, facilityId}, (rs, rowNum) -> {
+        return jdbcTemplate.query(sql, new Object[]{facilityType,rgLId, facilityId,assesmentId}, (rs, rowNum) -> {
             FormTransactionDTO form = new FormTransactionDTO();
             form.setFormID(rs.getInt("formid"));
             form.setFromName(rs.getString("formname"));

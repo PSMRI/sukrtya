@@ -43,6 +43,7 @@ public class FacilityRepository {
             facility.setBlockName(rs.getString("blockname"));
             facility.setFacilityStateIdDuplicated(rs.getInt("facilitystateid_duplicated"));
             facility.setIsSelected(rs.getInt("isselected"));
+            facility.setAssessmentId(rs.getInt("assessmentid"));
             return facility;
         });
     }

@@ -32,11 +32,12 @@ public class FormTransactionController {
     public List<FormTransactionDTO>  getFormTranslList(
             @RequestParam("facilytyType") int facilityType,
             @RequestParam("FacilityId") int facilityId,
-            @RequestParam("RgLId") int rgLId) {
+            @RequestParam("RgLId") int rgLId,
+            @RequestParam("AssessmentId") int assesmentId) {
         logger.info("Received request to get form transactions with parameters: facilityType={}, facilityId={}, rgLId={}",
                 facilityType, facilityId, rgLId);
 
-        List<FormTransactionDTO> objform = formTransactionService.getFormTranslList(facilityType, facilityId, rgLId);
+        List<FormTransactionDTO> objform = formTransactionService.getFormTranslList(facilityType, facilityId, rgLId,assesmentId);
 
         logger.info("Successfully retrieved form transactions for facilityType={}, facilityId={}, rgLId={}",
                 facilityType, facilityId, rgLId);
