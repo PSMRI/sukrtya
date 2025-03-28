@@ -1,0 +1,14 @@
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: my-postgres-container
+    restart: always
+    environment:
+      POSTGRES_DB: SUkrtya
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Zltj6ghj6J
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/Sukrtya-v1.0.1.sql:/docker-entrypoint-initdb.d/Sukrtya-v1.0.1.sql
