@@ -8,7 +8,7 @@ services:
       - COLLECTOR_OTLP_ENABLED=true
 
   app:
-    build: .
+    image: sukrtya-api:latest
     ports:
       - "8081:8080"
     environment:
@@ -19,5 +19,3 @@ services:
       - SPRING_APPLICATION_NAME=sukrtya-104
     volumes:
       - ./logs:/app/logs
-
-#chandan experiment
