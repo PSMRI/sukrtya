@@ -19,4 +19,4 @@ services:
       - SPRING_APPLICATION_NAME=sukrtya-104
     volumes:
       - ./logs:/app/logs
-    command: sh -c "mkdir -p /app/logs && java -jar app.jar"
+
