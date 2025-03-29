@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @OpenAPIDefinition(servers = {
-		@Server(url = "https://sukrtya.api.shsbihar.in", description = "104 Server"),
+		@Server(url = "https://sukrtya.api.shsbihar.in", description = "104-Server"),
 		@Server(url = "https://api.sukrtya.in", description = "Production Server"),
 		@Server(url = "https://dev-ui.sukrtya.in", description = "Tekdi - Production Server"),
 		@Server(url = "http://localhost:8080", description = "Development Server")
