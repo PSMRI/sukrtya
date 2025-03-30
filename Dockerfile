@@ -15,6 +15,9 @@ ENV SPRING_APPLICATION_NAME=${SPRING_APPLICATION_NAME}
 # Create logs directory
 RUN mkdir -p /app/logs
 
+# Create logs directory
+RUN mkdir -p /app/SukrtyaImages
+
 # Expose the port
 EXPOSE ${SERVER_PORT}
 

@@ -19,5 +19,6 @@ services:
       - SERVER_PORT=8080
       - SPRING_APPLICATION_NAME=sukrtya-104
     volumes:
-      - ./logs:/app/logs
+      - /home/Sukrtya/logs:/app/logs                    # For logs
+      - /home/Sukrtya/SukrtyaImages:/app/SukrtyaImages  # Persist SukrtyaImages folder outside the container
 
