@@ -1,3 +1,5 @@
+networks:
+  sukrtya-network:
 services:
   jaeger:
     image: jaegertracing/opentelemetry-all-in-one:latest
@@ -7,6 +9,9 @@ services:
       - "4318:4318"   # OpenTelemetry collector HTTP
     environment:
       - COLLECTOR_OTLP_ENABLED=true
+    networks:
+      - sukrtya-network
+
 
   app:
     image: sukrtya-api:latest
@@ -17,7 +22,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=Psmri@2024
       - SERVER_PORT=8080
-      - SPRING_APPLICATION_NAME=sukrtya-104
+      - SPRING_APPLICATION_NAME=sukrtya-api-app
+    networks:
+      - sukrtya-network
+
     volumes:
       - /home/Sukrtya/logs:/app/logs                    # For logs
       - /home/Sukrtya/SukrtyaImages:/app/SukrtyaImages  # Persist SukrtyaImages folder outside the container
