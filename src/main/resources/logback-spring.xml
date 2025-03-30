@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="LOGS" value="/app/logs"/>
+    <property name="LOGS" value="./logs"/>
     <property name="APP_NAME" value="${spring.application.name:-sukrtya}"/>
 
     <!-- Set timezone to local system time -->
