@@ -1,6 +1,5 @@
 networks:
   sukrtya-network:
-    driver: bridge
 services:
   jaeger:
     image: jaegertracing/opentelemetry-all-in-one:latest
