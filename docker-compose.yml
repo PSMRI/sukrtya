@@ -17,13 +17,11 @@ services:
       - SERVER_PORT=8080
       - SPRING_APPLICATION_NAME=sukrtya-api
       - SERVER_URL=https://sukrtya.api.shsbihar.in
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4317/v1/traces
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:55681/v1/traces
       - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
       - OTEL_TRACES_EXPORTER=otlp
       - OTEL_METRICS_EXPORTER=none
       - OTEL_LOGS_EXPORTER=none
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     networks:
       - sukrtya-network
 
