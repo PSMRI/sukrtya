@@ -18,7 +18,7 @@ services:
       - SPRING_APPLICATION_NAME=sukrtya-api
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318/v1/traces  # ✅ Tracing ke liye
     networks:
-      - jaeger-network
+      - sukrtya-network
 
     volumes:
       - /home/Sukrtya/logs:/app/logs                    # For logs
