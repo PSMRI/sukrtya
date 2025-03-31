@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class OtlpConfiguration {
 
    @Bean
-   OtlpHttpSpanExporter otlpHttpSpanExporter(@Value("${tracing.url}") String url) {
+   OtlpHttpSpanExporter otlpHttpSpanExporter(@Value("${otel.exporter.otlp.endpoint}") String url) {
        return OtlpHttpSpanExporter.builder()
            .setEndpoint(url)
            .build();
