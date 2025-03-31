@@ -1,13 +1,25 @@
+networks:
+  sukrtya-network:
+    driver: bridge
 services:
+  
   app:
-    build: .
+    image: sukrtya-api:latest
+    container_name: sukrtya-api
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5433/SUkrtya
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - DB_IP=192.168.20.18
+      - DB_PORT=5432
+      - DB_NAME=SUkrtya
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=Psmri@2024
       - SERVER_PORT=8080
-      - SPRING_APPLICATION_NAME=sukrtya
+      - SPRING_APPLICATION_NAME=sukrtya-api
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318/v1/traces  # ✅ Tracing ke liye
+    networks:
+      - jaeger-network
+
     volumes:
-      - /var/log/sukrtya:/app/logs 
+      - /home/Sukrtya/logs:/app/logs                    # For logs
+      - /home/Sukrtya/SukrtyaImages:/app/SukrtyaImages  # Persist SukrtyaImages folder outside the container
