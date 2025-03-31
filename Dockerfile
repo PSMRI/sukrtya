@@ -16,11 +16,8 @@ ENV SERVER_PORT=${SERVER_PORT}
 ENV SPRING_APPLICATION_NAME=${SPRING_APPLICATION_NAME}
 ENV SERVER_URL=${SERVER_URL}
 
-# Create logs directory
-RUN mkdir -p /app/logs
-
-# Create logs directory
-RUN mkdir -p /app/SukrtyaImages
+# Create necessary directories in one RUN instruction
+RUN mkdir -p /app/logs /app/SukrtyaImages
 
 # Expose the port
 EXPOSE ${SERVER_PORT}
