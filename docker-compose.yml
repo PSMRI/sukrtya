@@ -16,7 +16,8 @@ services:
       - DB_PASSWORD=Psmri@2024
       - SERVER_PORT=8080
       - SPRING_APPLICATION_NAME=sukrtya-api
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318/v1/traces  # ✅ Tracing ke liye
+      - SERVER_URL=https://sukrtya.api.shsbihar.in
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4318/v1/traces  # ✅ Tracing ke liye
     networks:
       - sukrtya-network
 

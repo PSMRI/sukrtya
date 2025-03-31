@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
-    @Value("${server.url:http://localhost:8080}")
+    @Value("${SERVER_URL:http://localhost:8080}")
     private String serverUrl;
 
     @Bean
