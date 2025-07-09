@@ -58,9 +58,13 @@ public class QuestionService {
                         question.setAnswerID(0);
                     }
 
-                    if ("Single Choice".equals(question.getQuestionType())) {
-                        question.setQuestionOptions(getOptionsForFaAnswers(question.getFaAnswers(),regLid));
-                    }
+                 String type = question.getQuestionType();
+                   if (type != null && !type.trim().isEmpty()) {
+    String lowerType = type.toLowerCase();
+
+    if (lowerType.equals("single choice") || lowerType.equals("multi choice") || lowerType.equals("checkbox")) {
+        question.setQuestionOptions(getOptionsForFaAnswers(question.getFaAnswers(), regLid));
+    }
 
                     return question;
                 }
