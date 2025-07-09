@@ -58,7 +58,8 @@ public class QuestionService {
                         question.setAnswerID(0);
                     }
 
-                String type = question.getQuestionType();
+                // Handle faanswer options for relevant question types
+            String type = question.getQuestionType();
             if (type != null && !type.trim().isEmpty()) {
                 String lowerType = type.toLowerCase();
                 if (lowerType.equals("single choice") || lowerType.equals("multi choice") || lowerType.equals("checkbox")) {
@@ -66,8 +67,12 @@ public class QuestionService {
                 }
             }
 
-        return questions;
-    }
+            return question;
+        }
+    );
+
+    return questions;
+}
 
     // Helper method to fetch options based on faAnswers values
     private List<QuestionOptionDTO> getOptionsForFaAnswers(String faAnswers ,Integer regLid) {
