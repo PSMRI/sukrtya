@@ -26,6 +26,15 @@ public class FacilityDetailDTO {
     private Integer facilityStateIdDuplicated;
     private Integer isSelected;
     private Integer assessmentId;
+    private Integer usermappedid;
+
+    public Integer getUsermappedid() {
+        return usermappedid;
+    }
+
+    public void setUsermappedid(Integer usermappedid) {
+        this.usermappedid = usermappedid;
+    }
 
     public Integer getFacilityBlockId()
     {

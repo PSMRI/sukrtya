@@ -44,6 +44,7 @@ public class FacilityRepository {
             facility.setFacilityStateIdDuplicated(rs.getInt("facilitystateid_duplicated"));
             facility.setIsSelected(rs.getInt("isselected"));
             facility.setAssessmentId(rs.getInt("assessmentid"));
+            facility.setUsermappedid(rs.getInt("usermappedid"));
             return facility;
         });
     }
