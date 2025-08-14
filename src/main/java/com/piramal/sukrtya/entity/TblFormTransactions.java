@@ -17,6 +17,10 @@ public class TblFormTransactions {
     @Column(name = "userid")
     private Integer userId;
 
+    @Column(name = "facilityid")
+    private Integer facilityid;
+
+
     @Column(name = "transactionid", unique = true)
     private String transactionId;
 
@@ -123,5 +127,13 @@ public class TblFormTransactions {
 
     public void setApprovedDate(String approvedDate) {
         this.approvedDate = approvedDate;
+    }
+    
+    public Integer getFacilityid() {
+        return facilityid;
+    }
+
+    public void setFacilityid(Integer facilityid) {
+        this.facilityid = facilityid;
     }
 }

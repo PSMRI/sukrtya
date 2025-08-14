@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Random;
 
 @Service
 public class FormAnswerService {
@@ -44,7 +45,7 @@ public class FormAnswerService {
         formSubmission.setLattitude(request.getLatitude());
         formSubmission.setLongitude(request.getLongitude());
         formSubmission.setGoogleAddress(request.getGoogleAddress());
-
+        formSubmission.setFacilityid(request.getFacilityId());
         formSubmissionRepository.save(formSubmission);
 
         // Save or update answers in tblfaanswers
@@ -73,7 +74,8 @@ public class FormAnswerService {
         LocalDateTime now = LocalDateTime.now();
         String month = String.format("%02d", now.getMonthValue());
         String yearLastTwoDigits = String.valueOf(now.getYear()).substring(2);
-        return nin + month + yearLastTwoDigits+formid;
+        int random = new Random().nextInt(9000) + 1000; // generates 4-digit random number
+        return nin + month + yearLastTwoDigits+formid+ random;
     }
     private String saveImage(String base64Image, String transactionId, Integer formId, Integer questionId) {
         try {

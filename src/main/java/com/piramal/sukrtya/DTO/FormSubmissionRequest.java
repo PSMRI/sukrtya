@@ -9,6 +9,7 @@ public class FormSubmissionRequest {
     private String TransactionId;
     private Integer userId;
     private Integer FormId;
+    private Integer FacilityId;
     private String FacilityNIN;
     private String Latitude;
     private String Longitude;
@@ -23,7 +24,13 @@ public class FormSubmissionRequest {
     public void setTransactionId(String transactionId) {
         this.TransactionId = transactionId;
     }
+   public Integer getFacilityId() {
+        return FacilityId;
+    }
 
+    public void setFacilityId(Integer facilityId) {
+        FacilityId = facilityId;
+    }
     // Getter and Setter for userId
     public Integer getUserId() {
         return userId;
