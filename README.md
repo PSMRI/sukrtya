@@ -28,7 +28,7 @@ Before building and running, set the following environment variables:
 | DB_USERNAME             | Database username                             |
 | DB_PASSWORD             | Database password                             |
 | FRUNTEND_URL            | Frontend application URL                      |
-| BACKED_URL              | Backend application URL                       |
+| BACKEND_URL              | Backend application URL                       |
 
 **Example (Linux/macOS):**
 
@@ -40,7 +40,7 @@ export DB_NAME="sukrtya_vhsnd_v2"
 export DB_USERNAME="postgres"
 export DB_PASSWORD="postgres"
 export FRUNTEND_URL="http://localhost:3000"
-export BACKED_URL="http://localhost:8081"
+export BACKEND_URL="http://localhost:8081"
 
 
 **Example (Windows):**
@@ -53,7 +53,7 @@ set DB_NAME=sukrtya_vhsnd_v2
 set DB_USERNAME=postgres
 set DB_PASSWORD=postgres
 set FRUNTEND_URL=http://localhost:3000
-set BACKED_URL=http://localhost:8081
+set BACKEND_URL=http://localhost:8081
 
 ---
 
@@ -72,7 +72,7 @@ set BACKED_URL=http://localhost:8081
 ### Alternatively: Pass Parameters Directly
 You can also pass configuration as command-line parameters:
 ```bash
-   SPRING_APPLICATION_NAME="Sukrtya" SERVER_PORT=8081 DB_IP="localhost" DB_PORT="5433" DB_NAME="sukrtya_vhsnd_v2" DB_USERNAME="postgres" DB_PASSWORD="postgres" FRUNTEND_URL="http://192.168.30.22:3000" BACKED_URL="http://localhost:8081" java -jar sukrtya-1.1.jar
+   SPRING_APPLICATION_NAME="Sukrtya" SERVER_PORT=8081 DB_IP="localhost" DB_PORT="5433" DB_NAME="sukrtya_vhsnd_v2" DB_USERNAME="postgres" DB_PASSWORD="postgres" FRUNTEND_URL="http://192.168.30.22:3000" BACKEND_URL="http://localhost:8081" java -jar sukrtya-1.1.jar
 ```
 *(Update `target/sukrtya.jar` if your JAR file has a different name.)*
 
@@ -87,7 +87,7 @@ Make sure your PostgreSQL database is running and matches the above environment 
 ## 📖 API Documentation
 
 Once the application is running, explore the API docs at:
-[BACKED_URL]/swagger-ui/index.html
+[BACKEND_URL]/swagger-ui/index.html
 
 - Replace `[SERVER_PORT]` with your configured port (default: 8081).
 
@@ -95,14 +95,14 @@ Once the application is running, explore the API docs at:
 
 ## 🌐 Frontend/Backend URLs
 
-Set `FRUNTEND_URL` and `BACKED_URL` environment variables as appropriate for your deployment.
+Set `FRUNTEND_URL` and `BACKEND_URL` environment variables as appropriate for your deployment.
 
 ---
 
 ## 💡 Tips
 
 - Check application logs for successful startup and database connection.
-- See [Swagger UI]([BACKED_URL]/swagger-ui/index.html) for all endpoints and schemas.
+- See [Swagger UI]([BACKEND_URL]/swagger-ui/index.html) for all endpoints and schemas.
 
 ---
 
