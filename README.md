@@ -54,6 +54,7 @@ set DB_USERNAME=postgres
 set DB_PASSWORD=postgres
 set FRUNTEND_URL=http://localhost:3000
 set BACKED_URL=http://localhost:8081
+
 ---
 
 ## 🧩 Build and Run
