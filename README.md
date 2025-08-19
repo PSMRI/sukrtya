@@ -71,7 +71,7 @@ set BACKED_URL=http://localhost:8081
 ### Alternatively: Pass Parameters Directly
 You can also pass configuration as command-line parameters:
 ```bash
-   SPRING_APPLICATION_NAME="Sukrtya" SERVER_PORT=8081 DB_IP="localhost" DB_PORT="5432" DB_NAME="sukrtya_vhsnd_v2" DB_USERNAME="postgres" DB_PASSWORD="postgres" FRUNTEND_URL="http://localhost:3000" BACKED_URL="http://localhost:8081" java -jar sukrtya.jar
+   SPRING_APPLICATION_NAME="Sukrtya" SERVER_PORT=8081 DB_IP="localhost" DB_PORT="5433" DB_NAME="sukrtya_vhsnd_v2" DB_USERNAME="postgres" DB_PASSWORD="postgres" FRUNTEND_URL="http://192.168.30.22:3000" BACKED_URL="http://localhost:8081" java -jar sukrtya-1.1.jar
 ```
 *(Update `target/sukrtya.jar` if your JAR file has a different name.)*
 
