@@ -12,8 +12,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
-    @Value("${SERVER_URL:http://localhost:8080}")
+    @Value("${BACKED_URL:http://localhost:8081}") 
     private String serverUrl;
+ 
 
     @Bean
     public OpenAPI customOpenAPI() {
