@@ -17,7 +17,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 // Get URLs from environment variables and split by comma
-                String frontendUrls = System.getenv().getOrDefault("FRONTEND_URL", "http://localhost:3000,https://localhost:3000");
+                String frontendUrls = System.getenv().getOrDefault("FRONTEND_URL", "https://sukrtya.sangha4u.in");
                 String backendUrls = System.getenv().getOrDefault("BACKEND_URL", "");
                 
                 // Combine and clean URLs
