@@ -1,24 +1,16 @@
-# ---- Build Stage ----
-FROM eclipse-temurin:21-jdk AS build
-
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy pom and src
 COPY pom.xml .
 COPY src ./src
 
-# Build the jar
-RUN  mvn -q -DskipTests package
+RUN mvn -q -DskipTests package
 
 # ---- Runtime Stage ----
 FROM eclipse-temurin:21-jre
-
 WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
-
 RUN mkdir -p /app/logs /app/SukrtyaImages
-
 EXPOSE 8080
-
 ENTRYPOINT ["java", "-jar", "app.jar"]
