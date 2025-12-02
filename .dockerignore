@@ -1,0 +1,55 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.iml
+*.ipr
+*.iws
+.DS_Store
+
+# Build artifacts
+target/
+*.class
+*.jar
+*.war
+
+# Logs
+logs/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Documentation
+README.md
+*.md
+
+# Docker files (no need to copy these into the image)
+Dockerfile
+docker-compose.yaml
+.dockerignore
+
+# Maven wrapper (optional - uncomment if you want to exclude)
+# .mvn/
+# mvnw
+# mvnw.cmd
+
+# Test files
+src/test/
+
+# Database
+db/
+*.db
+*.sqlite
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
