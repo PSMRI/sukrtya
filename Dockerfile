@@ -8,7 +8,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Build the jar
-RUN ./mvnw -q -DskipTests package || mvn -q -DskipTests package
+RUN  mvn -q -DskipTests package
 
 # ---- Runtime Stage ----
 FROM eclipse-temurin:21-jre
