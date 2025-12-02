@@ -1,12 +1,21 @@
+# ---- Build Stage ----
+FROM eclipse-temurin:21-jdk AS build
+
+WORKDIR /app
+
+# Copy pom and src
+COPY pom.xml .
+COPY src ./src
+
+# Build the jar
+RUN ./mvnw -q -DskipTests package || mvn -q -DskipTests package
+
+# ---- Runtime Stage ----
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-# Copy the JAR file
-COPY target/*.jar app.jar
-
-# Optional ENV (values will be overridden by docker-compose)
-ENV SERVER_PORT=8080
+COPY --from=build /app/target/*.jar app.jar
 
 RUN mkdir -p /app/logs /app/SukrtyaImages
 
