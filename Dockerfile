@@ -25,6 +25,6 @@ COPY --from=build /app/target/*.jar app.jar
 # Create necessary folders
 RUN mkdir -p /app/logs /app/SukrtyaImages
 
-EXPOSE 8080
+EXPOSE 8081
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
