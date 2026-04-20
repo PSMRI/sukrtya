@@ -7,7 +7,7 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn -q dependency:go-offline
 
-# Copy source code
+
 COPY src ./src
 
 # Build application
