@@ -22,8 +22,8 @@ RUN mvn clean package -DskipTests -B
 # Stage 2: Runtime Stage
 FROM eclipse-temurin:17-jre-alpine
 
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
+# Install runtime utilities used by entrypoint and healthcheck
+RUN apk add --no-cache dumb-init wget
 
 # Create non-root user for security
 RUN addgroup -S spring && adduser -S spring -G spring

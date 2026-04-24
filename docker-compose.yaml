@@ -35,6 +35,8 @@ services:
     
     volumes:
       - app_logs:/app/logs
+    expose:
+      - "8080"
     networks:
       - sukrtya-network
     healthcheck:
