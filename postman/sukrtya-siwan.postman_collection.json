@@ -1,0 +1,48 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "Sukrtya Siwan",
+		"description": "Data collection backend — master data import.\n\n**Import Excel:** multipart field name must be `file`.\n\n**Auth:** Collection uses **No Auth** so Postman does not send Basic headers (those cause 401 if the server expects different credentials).\n\n**Port:** `baseUrl` defaults to **8081** (see `server.port` in `application.properties`).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "noauth"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8081"
+		}
+	],
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Import master Excel",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"description": "Master roster spreadsheet (.xlsx or .xls). Re-select the file if you see a warning triangle (path moved or missing).",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": "{{baseUrl}}/api/admin/masters/import-excel",
+						"description": "Uploads the Excel sheet. Expect **200** or **400** JSON — not **401** (if you still see 401, restart the app after pulling latest code and confirm **Authorization** is **No Auth** / **Inherit auth** off)."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
