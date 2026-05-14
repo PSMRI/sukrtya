@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
 		"name": "Sukrtya Siwan",
-		"description": "Data collection backend — master data import.\n\n**Import Excel:** multipart field name must be `file`.\n\n**Auth:** Collection uses **No Auth** so Postman does not send Basic headers (those cause 401 if the server expects different credentials).\n\n**Port:** `baseUrl` defaults to **8081** (see `server.port` in `application.properties`).",
+		"description": "Sukrtya Siwan API — auth (JWT), master Excel import.\n\n**Base URL:** `{{baseUrl}}` (default **http://localhost:8081**).\n\n**Auth flow:** Run **Login — admin** or **Login — CHO (data collector)**; the test script saves `{{accessToken}}`. Then call **Get current user (me)** with Bearer token.\n\n**Excel import:** multipart field name must be `file` (still **No Auth** on that route).\n\n**Defaults:** admin `{{adminUsername}}` / `{{adminPassword}}`; CHO login uses **10-digit mobile** as username (`{{choUsername}}`) and `{{choPassword}}` (default `User@123`).",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"auth": {
@@ -12,9 +12,133 @@
 		{
 			"key": "baseUrl",
 			"value": "http://localhost:8081"
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "adminUsername",
+			"value": "admin"
+		},
+		{
+			"key": "adminPassword",
+			"value": "Admin@123"
+		},
+		{
+			"key": "choUsername",
+			"value": "9999999999",
+			"description": "10-digit CHO mobile from Excel import (portal username)."
+		},
+		{
+			"key": "choPassword",
+			"value": "User@123"
 		}
 	],
 	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login — admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    if (json && json.accessToken) {",
+									"        pm.collectionVariables.set(\"accessToken\", json.accessToken);",
+									"        console.log(\"Saved accessToken (admin). role=\", json.role);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{adminUsername}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+						},
+						"url": "{{baseUrl}}/api/auth/login",
+						"description": "Returns JWT `accessToken` (Bearer). Default admin matches `application.properties`: **admin** / **Admin@123** unless overridden."
+					},
+					"response": []
+				},
+				{
+					"name": "Login — CHO (data collector)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    if (json && json.accessToken) {",
+									"        pm.collectionVariables.set(\"accessToken\", json.accessToken);",
+									"        console.log(\"Saved accessToken (CHO). role=\", json.role);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{choUsername}}\",\n  \"password\": \"{{choPassword}}\"\n}"
+						},
+						"url": "{{baseUrl}}/api/auth/login",
+						"description": "Username = **10-digit CHO mobile** from roster import; default password **User@123** (`app.seed.cho-collector-default-password`). Set `choUsername` to a real imported CHO mobile."
+					},
+					"response": []
+				},
+				{
+					"name": "Get current user (me)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/auth/me",
+						"description": "Requires a valid JWT. Run a **Login** request first so `{{accessToken}}` is set. Expect **401** if token is missing or invalid."
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "Admin",
 			"item": [
@@ -38,7 +162,7 @@
 							]
 						},
 						"url": "{{baseUrl}}/api/admin/masters/import-excel",
-						"description": "Uploads the Excel sheet. Expect **200** or **400** JSON — not **401** (if you still see 401, restart the app after pulling latest code and confirm **Authorization** is **No Auth** / **Inherit auth** off)."
+						"description": "Uploads the Excel sheet. This route is **permitAll** for local testing (no JWT). Expect **200** or **400** JSON."
 					},
 					"response": []
 				}

@@ -17,6 +17,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sukrtya.siwan.portal.PortalUserProvisioningService;
+
 @Service
 public class MasterExcelImportService {
 
@@ -25,18 +27,21 @@ public class MasterExcelImportService {
 	private final FacilityRepository facilityRepository;
 	private final HealthWorkerRepository healthWorkerRepository;
 	private final FacilityWorkerAssignmentRepository assignmentRepository;
+	private final PortalUserProvisioningService portalUserProvisioningService;
 
 	public MasterExcelImportService(
 			DistrictRepository districtRepository,
 			BlockRepository blockRepository,
 			FacilityRepository facilityRepository,
 			HealthWorkerRepository healthWorkerRepository,
-			FacilityWorkerAssignmentRepository assignmentRepository) {
+			FacilityWorkerAssignmentRepository assignmentRepository,
+			PortalUserProvisioningService portalUserProvisioningService) {
 		this.districtRepository = districtRepository;
 		this.blockRepository = blockRepository;
 		this.facilityRepository = facilityRepository;
 		this.healthWorkerRepository = healthWorkerRepository;
 		this.assignmentRepository = assignmentRepository;
+		this.portalUserProvisioningService = portalUserProvisioningService;
 	}
 
 	@Transactional
@@ -93,6 +98,13 @@ public class MasterExcelImportService {
 				if (!isNoStaffPlaceholder(choName)) {
 					HealthWorker cho = findOrCreateHealthWorker(choName, choMobile);
 					replaceSingletonAssignment(facility, cho, HealthWorkerRole.CHO, excelHeaders.choName());
+					String choMobileNorm = normalizeMobile(choMobile);
+					if (isBlank(choMobileNorm)) {
+						messages.add("Row " + excelRow + ": CHO data-collector login skipped (CHO mobile missing or invalid).");
+					}
+					else {
+						portalUserProvisioningService.ensureChoDataCollectorForFacility(choMobileNorm, cho.getFullName(), facility);
+					}
 				}
 
 				String anmName = cellTrim(row, cols.anmName, formatter);
