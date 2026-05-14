@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
 		"name": "Sukrtya Siwan",
-		"description": "Sukrtya Siwan backend API.\n\n| Area | Method | Path | Auth |\n|------|--------|------|------|\n| Login | POST | `/api/auth/login` | None (JSON body) |\n| Current user | GET | `/api/auth/me` | Bearer JWT (folder **Me (JWT)**) |\n| Master roster | GET | `/api/me/master-context` | Bearer JWT |\n| Dashboard summary | GET | `/api/admin/dashboard/summary` | None (dev; `/api/admin/**` is open) |\n| Excel import | POST | `/api/admin/masters/import-excel` | None (multipart `file`) |\n\n**`{{baseUrl}}`** → `http://localhost:8081` by default (`server.port`).\n\n**Token:** Run **Login — admin** or **Login — CHO**; Tests save `{{accessToken}}`. Requests under **Me (JWT)** inherit Bearer auth from the folder.\n\n**Credentials:** `{{adminUsername}}` / `{{adminPassword}}`; CHO `{{choUsername}}` (10-digit mobile) / `{{choPassword}}`.",
+		"description": "Sukrtya Siwan backend API.\n\n**Production API:** `https://sukrtyasiwanapi.psmri.in` — set collection variable **`baseUrl`** to this (no trailing slash) for deployed tests; use `http://localhost:<port>` for local JVM.\n\n| Area | Method | Path | Auth |\n|------|--------|------|------|\n| Login | POST | `/api/auth/login` | None (JSON body) |\n| Current user | GET | `/api/auth/me` | Bearer JWT (folder **Me (JWT)**) |\n| Master roster | GET | `/api/me/master-context` | Bearer JWT |\n| Dashboard summary | GET | `/api/admin/dashboard/summary` | None (dev; `/api/admin/**` is open) |\n| Excel import | POST | `/api/admin/masters/import-excel` | None (multipart `file`) |\n\n**`{{baseUrl}}`** defaults to production API below.\n\n**Token:** Run **Login**; Tests save `{{accessToken}}`. **Me (JWT)** folder uses Bearer from the folder.\n\n**Credentials:** `{{adminUsername}}` / `{{adminPassword}}`; CHO `{{choUsername}}` / `{{choPassword}}`.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"auth": {
@@ -11,9 +11,9 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:8081",
+			"value": "https://sukrtyasiwanapi.psmri.in",
 			"type": "string",
-			"description": "API root (scheme + host + port)."
+			"description": "API root. Production: https://sukrtyasiwanapi.psmri.in — for local dev set to http://localhost:<server.port> (no trailing slash)."
 		},
 		{
 			"key": "accessToken",

@@ -2,6 +2,7 @@ package com.sukrtya.siwan.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -22,7 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * Stateless JWT for API auth. {@code POST /api/auth/login} is public; {@code GET /api/auth/me} and
  * {@code /api/me/**} require {@code Authorization: Bearer <token>}. {@code /api/admin/**} (import, dashboard) is
- * permitAll for local Postman; tighten before production.
+ * permitAll for local Postman; tighten before production. CORS is defined in {@link WebConfig} (MVC).
  */
 @Configuration
 @EnableWebSecurity
@@ -46,6 +47,8 @@ public class SecurityConfig {
 				.anonymous(AbstractHttpConfigurer::disable)
 				.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
+						// CORS preflight has no JWT; must be allowed before secured routes (e.g. /api/me/**).
+						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 						.requestMatchers("/api/auth/login").permitAll()
 						.requestMatchers("/api/admin/**").permitAll()
 						.requestMatchers("/api/auth/me", "/api/me/**").authenticated()

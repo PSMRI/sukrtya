@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +30,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	@Override
 	protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
+		if (HttpMethod.OPTIONS.matches(request.getMethod())) {
+			return true;
+		}
 		return "POST".equalsIgnoreCase(request.getMethod()) && request.getRequestURI().endsWith("/api/auth/login");
 	}
 
