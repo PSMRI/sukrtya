@@ -1,0 +1,57 @@
+services:
+
+  # Spring Boot Application Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sukrtya-app-siwan
+    restart: unless-stopped
+    environment:
+      # Spring Application
+      SPRING_APPLICATION_NAME: ${SPRING_APPLICATION_NAME:-sukrtya-api-siwan}
+      SERVER_PORT: ${SERVER_PORT:-8080}
+
+      # Database Configuration
+      DB_IP: ${DB_IP:-localhost}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME:-sukrtya_siwan}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-Psmri@2024}
+
+      # JPA/Hibernate
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
+      SPRING_JPA_SHOW_SQL: ${SPRING_JPA_SHOW_SQL:-false}
+
+      # Logging
+      LOGGING_LEVEL_ROOT: ${LOGGING_LEVEL_ROOT:-info}
+      LOGGING_LEVEL_COM_PIRAMAL_SUKRTYA: ${LOGGING_LEVEL_COM_PIRAMAL_SUKRTYA:-INFO}
+
+      # OpenTelemetry (optional)
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://host.docker.internal:55681/v1/traces}
+
+      # Java Options
+      JAVA_OPTS: ${JAVA_OPTS:--Xms512m -Xmx1024m}
+    
+    volumes:
+      - app_logs:/app/logs
+    expose:
+      - "8080"
+    networks:
+      - sukrtya-network
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  sukrtya-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  app_logs:
+    driver: local
