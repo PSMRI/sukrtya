@@ -14,6 +14,24 @@ public interface PortalUserFacilityRepository extends JpaRepository<PortalUserFa
 	long countByPortalUser_IdAndActiveTrueAndPrimaryTrue(Long portalUserId);
 
 	@Query("""
+			select count(distinct puf.facility.id) from PortalUserFacility puf
+			where puf.active = true
+			""")
+	long countDistinctFacilitiesWithActivePortalMapping();
+
+	@Query("""
+			select count(distinct f.id) from Facility f
+			where f.active = true
+			and not exists (
+				select 1 from PortalUserFacility puf
+				where puf.facility.id = f.id and puf.active = true)
+			""")
+	long countActiveFacilitiesWithNoActivePortalMapping();
+
+	@Query("select count(puf) from PortalUserFacility puf where puf.active = true")
+	long countActivePortalUserFacilityRows();
+
+	@Query("""
 			select puf from PortalUserFacility puf
 			join fetch puf.facility f
 			join fetch f.block b

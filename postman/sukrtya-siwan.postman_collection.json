@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
 		"name": "Sukrtya Siwan",
-		"description": "Sukrtya Siwan backend API.\n\n| Area | Method | Path | Auth |\n|------|--------|------|------|\n| Login | POST | `/api/auth/login` | None (JSON body) |\n| Current user | GET | `/api/auth/me` | Bearer JWT |\n| Master roster | GET | `/api/me/master-context` | Bearer JWT |\n| Excel import | POST | `/api/admin/masters/import-excel` | None (multipart `file`) |\n\n**`{{baseUrl}}`** defaults to `http://localhost:8081` (`server.port`).\n\n**Token:** Run **Login — admin** or **Login — CHO**; the Tests script stores `{{accessToken}}`. Use **Me (JWT)** requests after login.\n\n**Secrets:** Admin defaults `{{adminUsername}}` / `{{adminPassword}}`; CHO uses 10-digit `{{choUsername}}` / `{{choPassword}}` (`User@123` unless changed in `application.properties`).",
+		"description": "Sukrtya Siwan backend API.\n\n| Area | Method | Path | Auth |\n|------|--------|------|------|\n| Login | POST | `/api/auth/login` | None (JSON body) |\n| Current user | GET | `/api/auth/me` | Bearer JWT (folder **Me (JWT)**) |\n| Master roster | GET | `/api/me/master-context` | Bearer JWT |\n| Dashboard summary | GET | `/api/admin/dashboard/summary` | None (dev; `/api/admin/**` is open) |\n| Excel import | POST | `/api/admin/masters/import-excel` | None (multipart `file`) |\n\n**`{{baseUrl}}`** → `http://localhost:8081` by default (`server.port`).\n\n**Token:** Run **Login — admin** or **Login — CHO**; Tests save `{{accessToken}}`. Requests under **Me (JWT)** inherit Bearer auth from the folder.\n\n**Credentials:** `{{adminUsername}}` / `{{adminPassword}}`; CHO `{{choUsername}}` (10-digit mobile) / `{{choPassword}}`.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"auth": {
@@ -13,13 +13,13 @@
 			"key": "baseUrl",
 			"value": "http://localhost:8081",
 			"type": "string",
-			"description": "API root (scheme + host + port). Override if SERVER_PORT differs."
+			"description": "API root (scheme + host + port)."
 		},
 		{
 			"key": "accessToken",
 			"value": "",
 			"type": "string",
-			"description": "Set automatically by Login requests on 200; use as Bearer token."
+			"description": "Filled by Login requests (Tests). Used by Me (JWT) folder Bearer auth."
 		},
 		{
 			"key": "adminUsername",
@@ -35,7 +35,7 @@
 			"key": "choUsername",
 			"value": "9999999999",
 			"type": "string",
-			"description": "10-digit portal username (CHO mobile from Excel import)."
+			"description": "10-digit portal username (CHO mobile from import)."
 		},
 		{
 			"key": "choPassword",
@@ -46,7 +46,7 @@
 	"item": [
 		{
 			"name": "Auth",
-			"description": "Public endpoints. Successful login saves `accessToken` to collection variables.",
+			"description": "Public. Successful login stores `accessToken` on the collection.",
 			"item": [
 				{
 					"name": "Login — admin",
@@ -61,6 +61,8 @@
 									"        pm.collectionVariables.set(\"accessToken\", json.accessToken);",
 									"        console.log(\"Saved accessToken. role=\", json.role, \"expiresInSeconds=\", json.expiresInSeconds);",
 									"    }",
+									"} else {",
+									"    console.log(\"Login failed:\", pm.response.code, pm.response.text());",
 									"}"
 								],
 								"type": "text/javascript"
@@ -87,7 +89,7 @@
 							"raw": "{\n  \"username\": \"{{adminUsername}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
 						},
 						"url": "{{baseUrl}}/api/auth/login",
-						"description": "Response JSON: `accessToken`, `tokenType` (Bearer), `expiresInSeconds`, `role`, `username`, `displayName`. Credentials from `app.seed.default-admin-*` unless overridden."
+						"description": "`POST /api/auth/login` — JSON `username`, `password`. Response: `accessToken`, `tokenType`, `expiresInSeconds`, `role`, `username`, `displayName`."
 					},
 					"response": []
 				},
@@ -104,6 +106,8 @@
 									"        pm.collectionVariables.set(\"accessToken\", json.accessToken);",
 									"        console.log(\"Saved accessToken. role=\", json.role);",
 									"    }",
+									"} else {",
+									"    console.log(\"Login failed:\", pm.response.code, pm.response.text());",
 									"}"
 								],
 								"type": "text/javascript"
@@ -130,7 +134,7 @@
 							"raw": "{\n  \"username\": \"{{choUsername}}\",\n  \"password\": \"{{choPassword}}\"\n}"
 						},
 						"url": "{{baseUrl}}/api/auth/login",
-						"description": "Username = CHO **mobile** (10 digits). Default password from `app.seed.cho-collector-default-password` (usually `User@123`)."
+						"description": "Same path as admin login; username = CHO **mobile** (10 digits)."
 					},
 					"response": []
 				}
@@ -138,21 +142,21 @@
 		},
 		{
 			"name": "Me (JWT)",
-			"description": "Requires `Authorization: Bearer {{accessToken}}`. Run a **Login** under **Auth** first.",
+			"description": "Bearer `{{accessToken}}` is set on **this folder** — child requests inherit it. Log in under **Auth** first.",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{accessToken}}",
+						"type": "string"
+					}
+				]
+			},
 			"item": [
 				{
 					"name": "Get current user (me)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -161,23 +165,13 @@
 							}
 						],
 						"url": "{{baseUrl}}/api/auth/me",
-						"description": "Returns `userId`, `username`, `displayName`, `role`. **401** if token missing/invalid."
+						"description": "`GET /api/auth/me` — `userId`, `username`, `displayName`, `role`. **401** if token missing/invalid."
 					},
 					"response": []
 				},
 				{
 					"name": "Get master context (districts, facilities, staff)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -186,7 +180,7 @@
 							}
 						],
 						"url": "{{baseUrl}}/api/me/master-context",
-						"description": "Roster for the logged-in user: `scope` = `ALL` (admin) or `MAPPED_FACILITIES` (data collector), plus `facilities[]` with nested district, block, facility, `userPrimaryFacilityMapping`, and `staff[]` (active CHO/ANM/ASHA roles; ASHA rows include `supervisorAssignmentId`)."
+						"description": "`GET /api/me/master-context` — `scope`, user fields, `facilities[]` (district, block, facility, `staff[]`, `supervisorAssignmentId` on ASHA)."
 					},
 					"response": []
 				}
@@ -194,36 +188,64 @@
 		},
 		{
 			"name": "Admin",
-			"description": "Master data import (no JWT in current dev config).",
+			"description": "`/api/admin/**` is **permitAll** in dev (no JWT). Split: **Dashboard** vs **Masters**.",
 			"item": [
 				{
-					"name": "Import master Excel",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"description": "Master roster (.xlsx or .xls). Form field name must be exactly `file`.",
-									"type": "file",
-									"src": []
-								}
-							]
-						},
-						"url": "{{baseUrl}}/api/admin/masters/import-excel",
-						"description": "Multipart upload. **200** success JSON with import counts/messages; **400** on validation/read errors."
-					},
-					"response": []
+					"name": "Dashboard",
+					"item": [
+						{
+							"name": "Dashboard summary (counts)",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": "{{baseUrl}}/api/admin/dashboard/summary",
+								"description": "`GET /api/admin/dashboard/summary` — `geography`, `activeStaffAssignmentsByRole`, `facilityWorkerAssignmentsByStatus`, `portalUserFacility`, `choAtActiveFacilities`, `healthWorkers`."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Masters",
+					"item": [
+						{
+							"name": "Import master Excel",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"description": "Roster `.xlsx` / `.xls`. Field name must be `file`.",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": "{{baseUrl}}/api/admin/masters/import-excel",
+								"description": "`POST /api/admin/masters/import-excel` — multipart `file`. **200** / **400** JSON."
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}

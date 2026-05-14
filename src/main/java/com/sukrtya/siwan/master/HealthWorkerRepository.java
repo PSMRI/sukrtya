@@ -9,4 +9,8 @@ public interface HealthWorkerRepository extends JpaRepository<HealthWorker, Long
 	Optional<HealthWorker> findFirstByMobilePhone(String mobilePhone);
 
 	Optional<HealthWorker> findFirstByFullNameIgnoreCaseAndMobilePhoneIsNull(String fullName);
+
+	long count();
+
+	long countByActiveTrue();
 }

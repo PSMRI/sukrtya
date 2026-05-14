@@ -51,4 +51,8 @@ public interface FacilityWorkerAssignmentRepository extends JpaRepository<Facili
 	List<FacilityWorkerAssignment> findActiveByFacilityIdsWithDetails(
 			@Param("facilityIds") Collection<Long> facilityIds,
 			@Param("active") FacilityAssignmentStatus active);
+
+	long countByRoleAndStatus(HealthWorkerRole role, FacilityAssignmentStatus status);
+
+	long countByStatus(FacilityAssignmentStatus status);
 }

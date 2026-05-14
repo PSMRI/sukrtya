@@ -20,8 +20,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Stateless JWT for API auth. {@code POST /api/auth/login} is public; {@code GET /api/auth/me} and
- * {@code /api/me/**} require {@code Authorization: Bearer <token>}. Master Excel import stays open for local
- * Postman workflows (tighten {@code /api/admin/**} before production).
+ * {@code /api/me/**} require {@code Authorization: Bearer <token>}. {@code /api/admin/**} (import, dashboard) is
+ * permitAll for local Postman; tighten before production.
  */
 @Configuration
 @EnableWebSecurity

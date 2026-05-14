@@ -14,4 +14,8 @@ public interface PortalUserRepository extends JpaRepository<PortalUser, Long> {
 
 	@Query("select u from PortalUser u join fetch u.portalRole where lower(u.username) = lower(:username)")
 	Optional<PortalUser> findByUsernameIgnoreCaseWithRole(@Param("username") String username);
+
+	long count();
+
+	long countByAccountEnabledTrue();
 }
