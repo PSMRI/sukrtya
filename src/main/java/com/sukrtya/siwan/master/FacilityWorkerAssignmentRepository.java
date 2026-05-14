@@ -1,5 +1,7 @@
 package com.sukrtya.siwan.master;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,4 +40,15 @@ public interface FacilityWorkerAssignmentRepository extends JpaRepository<Facili
 			@Param("workerId") Long workerId,
 			@Param("role") HealthWorkerRole role,
 			@Param("activeStatus") FacilityAssignmentStatus activeStatus);
+
+	@Query("""
+			select distinct a from FacilityWorkerAssignment a
+			join fetch a.healthWorker hw
+			join fetch a.facility fac
+			left join fetch a.supervisorAssignment sup
+			where fac.id in :facilityIds and a.status = :active
+			""")
+	List<FacilityWorkerAssignment> findActiveByFacilityIdsWithDetails(
+			@Param("facilityIds") Collection<Long> facilityIds,
+			@Param("active") FacilityAssignmentStatus active);
 }

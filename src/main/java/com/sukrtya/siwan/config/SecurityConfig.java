@@ -19,8 +19,8 @@ import com.sukrtya.siwan.auth.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Stateless JWT for API auth. {@code POST /api/auth/login} is public; {@code GET /api/auth/me}
- * requires {@code Authorization: Bearer <token>}. Master Excel import stays open for local
+ * Stateless JWT for API auth. {@code POST /api/auth/login} is public; {@code GET /api/auth/me} and
+ * {@code /api/me/**} require {@code Authorization: Bearer <token>}. Master Excel import stays open for local
  * Postman workflows (tighten {@code /api/admin/**} before production).
  */
 @Configuration
@@ -46,7 +46,7 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers("/api/auth/login").permitAll()
 						.requestMatchers("/api/admin/**").permitAll()
-						.requestMatchers("/api/auth/me").authenticated()
+						.requestMatchers("/api/auth/me", "/api/me/**").authenticated()
 						.anyRequest().permitAll())
 				.exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
 					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
