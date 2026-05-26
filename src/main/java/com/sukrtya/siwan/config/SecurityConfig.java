@@ -21,9 +21,17 @@ import com.sukrtya.siwan.auth.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Stateless JWT for API auth. {@code POST /api/auth/login} is public; {@code GET /api/auth/me} and
- * {@code /api/me/**} require {@code Authorization: Bearer <token>}. {@code /api/admin/**} (import, dashboard) is
- * permitAll for local Postman; tighten before production. CORS is defined in {@link WebConfig} (MVC).
+ * Stateless JWT for API auth.
+ *
+ * <ul>
+ *   <li>POST /api/auth/login is public.</li>
+ *   <li>/api/auth/me, /api/me, /api/forms, /api/asha/{id}/beneficiaries, /api/beneficiaries —
+ *       all require Authorization: Bearer &lt;token&gt;.</li>
+ *   <li>/api/admin (master / forms catalog / Excel import / dashboard) is permitAll for local
+ *       Postman testing; tighten before production.</li>
+ * </ul>
+ *
+ * <p>CORS is defined in {@link WebConfig} (MVC).
  */
 @Configuration
 @EnableWebSecurity
@@ -51,7 +59,13 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 						.requestMatchers("/api/auth/login").permitAll()
 						.requestMatchers("/api/admin/**").permitAll()
-						.requestMatchers("/api/auth/me", "/api/me/**").authenticated()
+						.requestMatchers(
+								"/api/auth/me",
+								"/api/me/**",
+								"/api/forms/**",
+								"/api/asha/*/beneficiaries",
+								"/api/asha/*/beneficiaries/**",
+								"/api/beneficiaries/**").authenticated()
 						.anyRequest().permitAll())
 				.exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
 					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
