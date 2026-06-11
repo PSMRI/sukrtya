@@ -24,4 +24,6 @@ public interface BeneficiaryFormResponseRepository extends JpaRepository<Benefic
 	boolean existsByBeneficiaryIdAndFormId(Long beneficiaryId, Long formId);
 
 	long countByBeneficiaryId(Long beneficiaryId);
+
+	long countByFormId(Long formId);
 }

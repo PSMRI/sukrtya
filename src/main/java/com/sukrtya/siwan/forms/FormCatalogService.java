@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.sukrtya.siwan.beneficiary.BeneficiaryFormResponseRepository;
 import com.sukrtya.siwan.forms.dto.FormDetail;
 import com.sukrtya.siwan.forms.dto.FormQuestionView;
 import com.sukrtya.siwan.forms.dto.FormSummary;
@@ -26,16 +27,19 @@ public class FormCatalogService {
 	private final FormQuestionRepository formQuestionRepository;
 	private final OptionSetRepository optionSetRepository;
 	private final OptionValueRepository optionValueRepository;
+	private final BeneficiaryFormResponseRepository responseRepository;
 
 	public FormCatalogService(
 			FormRepository formRepository,
 			FormQuestionRepository formQuestionRepository,
 			OptionSetRepository optionSetRepository,
-			OptionValueRepository optionValueRepository) {
+			OptionValueRepository optionValueRepository,
+			BeneficiaryFormResponseRepository responseRepository) {
 		this.formRepository = formRepository;
 		this.formQuestionRepository = formQuestionRepository;
 		this.optionSetRepository = optionSetRepository;
 		this.optionValueRepository = optionValueRepository;
+		this.responseRepository = responseRepository;
 	}
 
 	@Transactional(readOnly = true)
@@ -137,6 +141,34 @@ public class FormCatalogService {
 		Form saved = formRepository.save(form);
 		long count = formQuestionRepository.findByFormIdOrderBySequenceAscFaQidAsc(saved.getId()).size();
 		return FormSummary.of(saved, count);
+	}
+
+	/**
+	 * Permanently removes a form catalog row and its questions ({@code form_question} cascades).
+	 * Beneficiary responses and downstream forms that list this code as a prerequisite block
+	 * deletion so historical data and visit chains stay intact.
+	 */
+	@Transactional
+	public void deletePermanently(String code) {
+		Form form = requireFormByCode(code);
+
+		long responseCount = responseRepository.countByFormId(form.getId());
+		if (responseCount > 0) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT,
+					"Cannot delete form '" + form.getCode() + "': " + responseCount
+							+ " beneficiary response(s) exist. Deactivate instead (DELETE without permanent=true),"
+							+ " or remove/archive responses first.");
+		}
+
+		List<Form> dependents = formRepository.findByPrerequisiteCodeIgnoreCase(form.getCode());
+		if (!dependents.isEmpty()) {
+			String codes = dependents.stream().map(Form::getCode).sorted().reduce((a, b) -> a + ", " + b).orElse("");
+			throw new ResponseStatusException(HttpStatus.CONFLICT,
+					"Cannot delete form '" + form.getCode() + "': other forms list it as prerequisite: "
+							+ codes + ". Update or delete those forms first.");
+		}
+
+		formRepository.delete(form);
 	}
 
 	@Transactional(readOnly = true)

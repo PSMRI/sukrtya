@@ -78,12 +78,25 @@ public class FormAdminController {
 	}
 
 	/**
-	 * Convenience: same effect as {@code POST /{code}/deactivate}. Kept so the React admin UI can
-	 * use a stable {@code DELETE} verb for "remove from active set".
+	 * Delete a form from the catalog.
+	 *
+	 * <ul>
+	 *   <li>Default ({@code permanent=false}): soft-delete — sets {@code active=false}. Safe when
+	 *       beneficiaries already submitted this form; historical JSONB rows keep working.</li>
+	 *   <li>{@code permanent=true}: hard-delete — removes the form and its questions. Blocked with
+	 *       {@code 409} if any beneficiary responses exist or another form lists this code as
+	 *       {@code prerequisiteCode}.</li>
+	 * </ul>
 	 */
 	@DeleteMapping("/{code}")
-	public FormSummary delete(@PathVariable("code") String code) {
-		return formCatalogService.setActive(code, false);
+	public ResponseEntity<?> delete(
+			@PathVariable("code") String code,
+			@RequestParam(value = "permanent", defaultValue = "false") boolean permanent) {
+		if (permanent) {
+			formCatalogService.deletePermanently(code);
+			return ResponseEntity.noContent().build();
+		}
+		return ResponseEntity.ok(formCatalogService.setActive(code, false));
 	}
 
 	@GetMapping("/option-sets")

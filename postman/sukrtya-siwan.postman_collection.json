@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
 		"name": "Sukrtya Siwan",
-		"description": "Sukrtya Siwan backend API.\n\n**Production API:** `https://sukrtyasiwanapi.psmri.in` — set collection variable **`baseUrl`** to this (no trailing slash) for deployed tests; use `http://localhost:<port>` for local JVM.\n\n| Area | Method | Path | Auth |\n|------|--------|------|------|\n| Login | POST | `/api/auth/login` | None (JSON body) |\n| Current user | GET | `/api/auth/me` | Bearer JWT (folder **Me (JWT)**) |\n| Master roster | GET | `/api/me/master-context` | Bearer JWT |\n| Dashboard summary | GET | `/api/admin/dashboard/summary` | None (dev; `/api/admin/**` is open) |\n| Master Excel import | POST | `/api/admin/masters/import-excel` | None (multipart `file`) |\n| Forms catalog (CRUD) | GET/POST/PUT | `/api/admin/forms[/{code}]` | None (dev) |\n| Forms activate/deactivate | POST/DELETE | `/api/admin/forms/{code}/(de)activate` | None (dev) |\n| Forms option-sets | GET | `/api/admin/forms/option-sets` | None (dev) |\n| Forms Excel import | POST | `/api/admin/forms/import-excel` | None (multipart `file`) |\n| Form schema (dynamic render) | GET | `/api/forms/{code}/schema?beneficiaryId=` | Bearer JWT |\n| Beneficiary list under ASHA | GET | `/api/asha/{ashaAssignmentId}/beneficiaries` | Bearer JWT |\n| Register pregnant woman (BASIC) | POST | `/api/asha/{ashaAssignmentId}/beneficiaries` | Bearer JWT |\n| Beneficiary detail | GET | `/api/beneficiaries/{id}` | Bearer JWT |\n| Update BASIC | PUT | `/api/beneficiaries/{id}` | Bearer JWT |\n| Get form response | GET | `/api/beneficiaries/{id}/forms/{code}` | Bearer JWT |\n| Submit/Update form response | POST | `/api/beneficiaries/{id}/forms/{code}` | Bearer JWT |\n\n**`{{baseUrl}}`** defaults to production API below.\n\n**Token:** Run **Login**; Tests save `{{accessToken}}`. **Me (JWT)** and **Beneficiary (JWT)** folders use Bearer from the folder.\n\n**Credentials:** `{{adminUsername}}` / `{{adminPassword}}`; CHO `{{choUsername}}` / `{{choPassword}}`.\n\n**Workflows:**\n- **Admin → Forms** — create catalog rows → upload Excel → list → fetch one.\n- **Beneficiary (JWT)** — login as CHO → master-context to find `ashaAssignmentId` → register pregnant woman with BASIC → list/detail under the ASHA → submit ANC1..4.",
+		"description": "Sukrtya Siwan backend API.\n\n**Production API:** `https://sukrtyasiwanapi.psmri.in` — set collection variable **`baseUrl`** to this (no trailing slash) for deployed tests; use `http://localhost:<port>` for local JVM.\n\n| Area | Method | Path | Auth |\n|------|--------|------|------|\n| Login | POST | `/api/auth/login` | None (JSON body) |\n| Current user | GET | `/api/auth/me` | Bearer JWT (folder **Me (JWT)**) |\n| Master roster | GET | `/api/me/master-context` | Bearer JWT |\n| Dashboard summary | GET | `/api/admin/dashboard/summary` | None (dev; `/api/admin/**` is open) |\n| Master Excel import | POST | `/api/admin/masters/import-excel` | None (multipart `file`) |\n| Forms catalog (CRUD) | GET/POST/PUT | `/api/admin/forms[/{code}]` | None (dev) |\n| Forms activate/deactivate | POST | `/api/admin/forms/{code}/activate` or `/deactivate` | None (dev) |\n| Delete form (soft) | DELETE | `/api/admin/forms/{code}` | None (dev) |\n| Delete form (permanent) | DELETE | `/api/admin/forms/{code}?permanent=true` | None (dev) |\n| Forms option-sets | GET | `/api/admin/forms/option-sets` | None (dev) |\n| Forms Excel import | POST | `/api/admin/forms/import-excel` | None (multipart `file`) |\n| Form schema (dynamic render) | GET | `/api/forms/{code}/schema?beneficiaryId=` | Bearer JWT |\n| Beneficiary list under ASHA | GET | `/api/asha/{ashaAssignmentId}/beneficiaries` | Bearer JWT |\n| Register pregnant woman (BASIC) | POST | `/api/asha/{ashaAssignmentId}/beneficiaries` | Bearer JWT |\n| Beneficiary detail | GET | `/api/beneficiaries/{id}` | Bearer JWT |\n| Update BASIC | PUT | `/api/beneficiaries/{id}` | Bearer JWT |\n| Get form response | GET | `/api/beneficiaries/{id}/forms/{code}` | Bearer JWT |\n| Submit/Update form response | POST | `/api/beneficiaries/{id}/forms/{code}` | Bearer JWT |\n\n**`{{baseUrl}}`** defaults to production API below.\n\n**Token:** Run **Login**; Tests save `{{accessToken}}`. **Me (JWT)** and **Beneficiary (JWT)** folders use Bearer from the folder.\n\n**Credentials:** `{{adminUsername}}` / `{{adminPassword}}`; CHO `{{choUsername}}` / `{{choPassword}}`.\n\n**Collection variables:** `formCode`, `ashaAssignmentId`, `beneficiaryId` — set manually or via Tests scripts on master-context / register.\n\n**Workflows:**\n- **Admin → Forms** — create catalog (BASIC, ANC1–4, PNC, …) → upload Excel → list → fetch one → soft/permanent delete if needed.\n- **Beneficiary (JWT)** — login as CHO → master-context for `ashaAssignmentId` → register BASIC → list → schema + submit ANC/PNC.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"auth": {
@@ -46,7 +46,7 @@
 			"key": "formCode",
 			"value": "BASIC",
 			"type": "string",
-			"description": "Form catalog code used by single-form requests under Admin → Forms and Beneficiary (JWT) (e.g. BASIC, ANC1, ANC2, ANC3, ANC4)."
+			"description": "Form catalog code for Admin → Forms and Beneficiary (JWT) requests (e.g. BASIC, ANC1, ANC2, ANC3, ANC4, PNC)."
 		},
 		{
 			"key": "ashaAssignmentId",
@@ -189,6 +189,35 @@
 				},
 				{
 					"name": "Get master context (districts, facilities, staff)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    const facilities = json.facilities || [];",
+									"    let ashaId = null;",
+									"    for (const fac of facilities) {",
+									"        const staff = fac.staff || [];",
+									"        const asha = staff.find(s => s.roleName && String(s.roleName).toUpperCase().includes('ASHA') && !String(s.roleName).toUpperCase().includes('FACILITATOR'));",
+									"        if (asha && asha.assignmentId) {",
+									"            ashaId = asha.assignmentId;",
+									"            break;",
+									"        }",
+									"    }",
+									"    if (ashaId) {",
+									"        pm.collectionVariables.set('ashaAssignmentId', String(ashaId));",
+									"        console.log('Saved ashaAssignmentId =', ashaId);",
+									"    } else {",
+									"        console.log('No ASHA assignmentId found in master-context; set {{ashaAssignmentId}} manually.');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -198,7 +227,7 @@
 							}
 						],
 						"url": "{{baseUrl}}/api/me/master-context",
-						"description": "`GET /api/me/master-context` — `scope`, user fields, `facilities[]` (district, block, facility, `staff[]`, `supervisorAssignmentId` on ASHA)."
+						"description": "`GET /api/me/master-context` — `scope`, user fields, `facilities[]` (district, block, facility, `staff[]` with `assignmentId`, `roleName`, `workerName`).\n\nTests script saves the **first ASHA** `assignmentId` to `{{ashaAssignmentId}}` (skips ASHA_FACILITATOR). Pick a different ASHA manually if needed."
 					},
 					"response": []
 				}
@@ -267,7 +296,7 @@
 				},
 				{
 					"name": "Forms",
-					"description": "Admin CRUD for the form catalog (BASIC, ANC1..4, PNC, etc.) plus Excel upload for questions + option sets.\n\n**Suggested order:**\n1. **Seed catalog** — run `Create form — BASIC` through `Create form — ANC4` once. Re-runs return **409 Conflict** (safe).\n2. **List forms** — verify all 5 rows are in the catalog with version=0.\n3. **Import forms Excel** — multipart upload of `SukrtyaQuestion.xlsx` (or any workbook with `Question Master` + `OptionMaster` sheets). Each form's `version` bumps; question rows are replaced.\n4. **Get form (one)** — inspect the parsed questions (uses `{{formCode}}`); computed fields like `EDD = LMP + 280 days` are returned with `computedKind: DATE_OFFSET`, `computedSourceCode: BASIC_16`.\n5. **List option sets** — confirm auto-generated sets (`OPT_1_2`, `OPT_3_4_5`, `OPT_6_7_..._18`, `OPT_21_22`) are populated from OptionMaster.\n\n**Heads-up:** in `SukrtyaQuestion.xlsx` the Yes/No questions reference IDs `1/2` but OptionMaster only has `0=No, 1=Yes` (id `2` is missing). Before importing, either add a `2 | No` row to OptionMaster, or change `1/2` to `0/1` in Question Master. Otherwise `OPT_1_2` will be created with only the \"Yes\" option and the import response will warn about the missing id.",
+					"description": "Admin CRUD for the form catalog (BASIC, ANC1..4, PNC, etc.) plus Excel upload for questions + option sets.\n\n**Suggested order:**\n1. **Seed catalog** — run `Create form — BASIC` through `Create form — ANC4` and `Create form — PNC` once. Re-runs return **409 Conflict** (safe).\n2. **List forms** — verify all catalog rows (sequence: BASIC 10, ANC1 20, … ANC4 50, PNC 60).\n3. **Import forms Excel** — multipart upload of `SukrtyaQuestion.xlsx`. Each affected form's `version` bumps; `form_question` rows are replaced (no DB wipe needed).\n4. **Get form (one)** — inspect questions + inlined `options[]` (set `{{formCode}}`).\n5. **List option sets** — confirm OptionMaster-derived sets.\n6. **Delete** — soft delete (`DELETE` without query) when form has live data; permanent (`?permanent=true`) only when no responses and no dependent prerequisites.\n\n**New form from Excel:** create catalog row first (`POST /api/admin/forms`), set Form column in Excel, then re-import.\n\n**Heads-up:** Yes/No questions referencing OptionMaster id `2` when only `0/1` exist — fix Excel or OptionMaster before import.",
 					"item": [
 						{
 							"name": "List forms",
@@ -436,6 +465,58 @@
 							"response": []
 						},
 						{
+							"name": "Create form — PNC",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"code\": \"PNC\",\n  \"name\": \"PNC Visit\",\n  \"sequence\": 60,\n  \"prerequisiteCode\": \"ANC4\",\n  \"description\": \"Post-natal care visit (rows moved from ANC4 in Excel).\",\n  \"active\": true\n}"
+								},
+								"url": "{{baseUrl}}/api/admin/forms",
+								"description": "Seed the **PNC** form. `sequence` must be greater than ANC4 (50). `prerequisiteCode` must be **ANC4** (not PNC). Create before Excel import if Question Master has a PNC section."
+							},
+							"response": []
+						},
+						{
+							"name": "Create form (custom)",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"code\": \"{{formCode}}\",\n  \"name\": \"New survey form\",\n  \"sequence\": 70,\n  \"prerequisiteCode\": \"PNC\",\n  \"description\": \"Template for any new form code.\",\n  \"active\": true\n}"
+								},
+								"url": "{{baseUrl}}/api/admin/forms",
+								"description": "Generic catalog create — set `{{formCode}}` and adjust `sequence` / `prerequisiteCode` before sending. Code must match the Form column in Excel."
+							},
+							"response": []
+						},
+						{
 							"name": "Update form",
 							"request": {
 								"auth": {
@@ -511,7 +592,42 @@
 									}
 								],
 								"url": "{{baseUrl}}/api/admin/forms/{{formCode}}",
-								"description": "`DELETE /api/admin/forms/{code}` — alias for **deactivate** (we never hard-delete; existing responses keep referencing the form)."
+								"description": "`DELETE /api/admin/forms/{code}` — **soft delete** (default). Sets `active=false`. Returns updated `FormSummary`. Safe when beneficiaries already submitted this form; historical JSONB responses remain valid.\n\nSame effect as `POST /api/admin/forms/{code}/deactivate`."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete form (permanent)",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/admin/forms/{{formCode}}?permanent=true",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"forms",
+										"{{formCode}}"
+									],
+									"query": [
+										{
+											"key": "permanent",
+											"value": "true"
+										}
+									]
+								},
+								"description": "`DELETE /api/admin/forms/{code}?permanent=true` — **hard delete**. Removes the form row and all `form_question` rows (cascade).\n\n**Blocked (409)** when:\n- Any `beneficiary_form_response` exists for this form (use soft delete instead).\n- Another form lists this code as `prerequisiteCode` (e.g. cannot delete BASIC while ANC1 exists).\n\n**204 No Content** on success. Use for catalog mistakes (e.g. wrong PNC created, no data submitted yet)."
 							},
 							"response": []
 						},
@@ -558,7 +674,7 @@
 									]
 								},
 							"url": "{{baseUrl}}/api/admin/forms/import-excel",
-							"description": "`POST /api/admin/forms/import-excel` — multipart `file`.\n\n**Section detection (per row, in order):**\n1. Explicit `Form Name` cell, normalised + aliased (`Basic Details` → `BASIC`, `1st ANC` → `ANC1`, etc.).\n2. Inference from question text: rows like `Due date of ... 1st/2nd/3rd/4th ANC` start sections `ANC1..4`.\n3. Sticky carry-forward from the previous row.\n4. Default `BASIC` for rows before any marker.\n\nRows with blank `faAnswerType` (e.g. District / Block / HWC / CHO / ASHA headers in rows 2–8) are silently skipped — they're geography metadata, not form fields.\n\n**Options:** for SINGLE/MULTI CHOICE rows, `faAnswer` is parsed as a slash-separated list of OptionMaster IDs (`1/2`, `3/4/5`, `19/20`, ...). The parser **auto-creates deduplicated option sets** — each unique sorted ID list becomes one set (e.g. `OPT_1_2`, `OPT_3_4_5`).\n\n**Computed fields:** `Remarks` patterns like `LMP Date + 280 Days` become `computedKind=DATE_OFFSET`, `computedSourceCode=<source question's stable code>`, `computedOffsetDays=280`. Source lookup is global across all forms in the same upload.\n\n**Behaviour summary:**\n- For each detected form, the catalog row must already exist (use *Create form — ...* first). If missing, those questions are skipped with a clear message.\n- Existing `form_question` rows for each affected form are **deleted and replaced**; `form.version` is incremented by 1.\n- Each referenced option set is **wholesale replaced** so re-uploading propagates label changes.\n\n**Response (200):** `{ success, questionsImported, questionsSkipped, optionsImported, questionsByForm: { BASIC: 10, ANC1: 12, ANC2: 12, ANC3: 12, ANC4: 35 }, messages: [warnings] }`.\n\n**Tip — preview before uploading:** run `python scripts/preview_form_import.py` in the repo root to get an exact dry-run of forms / questions / option sets / computed fields against your workbook (no DB writes)."
+							"description": "`POST /api/admin/forms/import-excel` — multipart `file`.\n\n**Section detection (per row, in order):**\n1. Explicit `Form Name` cell, normalised + aliased (`Basic Details` → `BASIC`, `1st ANC` → `ANC1`, etc.).\n2. Inference from question text: rows like `Due date of ... 1st/2nd/3rd/4th ANC` start sections `ANC1..4`.\n3. Sticky carry-forward from the previous row.\n4. Default `BASIC` for rows before any marker.\n\nRows with blank `faAnswerType` (e.g. District / Block / HWC / CHO / ASHA headers in rows 2–8) are silently skipped — they're geography metadata, not form fields.\n\n**Options:** for SINGLE/MULTI CHOICE rows, `faAnswer` is parsed as a slash-separated list of OptionMaster IDs (`1/2`, `3/4/5`, `19/20`, ...). The parser **auto-creates deduplicated option sets** — each unique sorted ID list becomes one set (e.g. `OPT_1_2`, `OPT_3_4_5`).\n\n**Computed fields:** `Remarks` patterns like `LMP Date + 280 Days` become `computedKind=DATE_OFFSET`, `computedSourceCode=<source question's stable code>`, `computedOffsetDays=280`. Source lookup is global across all forms in the same upload.\n\n**Behaviour summary:**\n- For each detected form, the catalog row must already exist (use *Create form — ...* first). If missing, those questions are skipped with a clear message.\n- Existing `form_question` rows for each affected form are **deleted and replaced**; `form.version` is incremented by 1.\n- Each referenced option set is **wholesale replaced** so re-uploading propagates label changes.\n\n**Response (200):** `{ success, questionsImported, questionsSkipped, optionsImported, questionsByForm: { BASIC: 10, ANC1: 12, ANC2: 12, ANC3: 12, ANC4: 27, PNC: 8 }, messages: [warnings] }` (counts vary with Excel).\n\n**Re-import:** no DB clean needed; questions per form are replaced and `form.version` increments.\n\n**Tip:** run `python scripts/preview_form_import.py` for a dry-run before upload."
 						},
 						"response": []
 					}
@@ -663,7 +779,7 @@
 						"raw": "{\n  \"answers\": {\n    \"BASIC_8\":  \"Siwan Village\",\n    \"BASIC_9\":  \"Sita Devi\",\n    \"BASIC_10\": \"1\",\n    \"BASIC_11\": \"14000000000001\",\n    \"BASIC_12\": \"Some answer\",\n    \"BASIC_13\": 26,\n    \"BASIC_14\": \"Ram Kumar\",\n    \"BASIC_15\": \"9876543210\",\n    \"BASIC_16\": \"2025-08-01\"\n  },\n  \"status\": \"SUBMITTED\"\n}"
 					},
 					"url": "{{baseUrl}}/api/asha/{{ashaAssignmentId}}/beneficiaries",
-					"description": "`POST /api/asha/{ashaAssignmentId}/beneficiaries` — register a new pregnant woman under one ASHA.\n\n**Body** is the BASIC answers keyed by question code (from `GET /api/admin/forms/BASIC`):\n- The codes above are placeholders shaped like the user's `SukrtyaQuestion.xlsx` (`BASIC_8..BASIC_16`). **Run `GET /api/admin/forms/BASIC` first** and adjust to your actual codes.\n- LMP (`BASIC_16`) should be ISO `yyyy-mm-dd`; `dd/MM/yyyy` and `dd-MM-yyyy` are also accepted.\n- `EDD` (`BASIC_17`) is **computed server-side** as LMP + 280; do not include it in the body — anything you send is ignored on re-read.\n- `status` defaults to `SUBMITTED`; use `DRAFT` for partial saves.\n\n**Server-side:**\n- Validates against `form_question` (mandatory, min/max, option membership).\n- Auto-projects hot fields onto `beneficiary` columns (name, husband, mobile, ABHA, village, age, LMP, EDD) by matching question labels — code names like `BASIC_9` are not hardcoded.\n- Generates a unique beneficiary code (`BEN-YYYY-XXXXXX`).\n- Writes the BASIC JSONB to `beneficiary_form_response`.\n\n**201 Created** with the new `BeneficiarySummary`. **400** on validation failure (`Validation failed: [BASIC_16: ...]`). **403** if you can't write to this ASHA's facility.\n\nThe Tests script saves the new id to `{{beneficiaryId}}`."
+					"description": "`POST /api/asha/{ashaAssignmentId}/beneficiaries` — register a new pregnant woman under one ASHA.\n\n**Body** is the BASIC answers keyed by question code (from `GET /api/admin/forms/BASIC`):\n- The codes above are placeholders shaped like the user's `SukrtyaQuestion.xlsx` (`BASIC_8..BASIC_16`). **Run `GET /api/admin/forms/BASIC` first** and adjust to your actual codes.\n- LMP (`BASIC_16`) should be ISO `yyyy-mm-dd`; `dd/MM/yyyy` and `dd-MM-yyyy` are also accepted.\n- `EDD` (`BASIC_17`) is **computed server-side** as LMP + 280; do not include it in the body — anything you send is ignored on re-read.\n- `status` defaults to `SUBMITTED`; use `DRAFT` for partial saves.\n\n**Server-side:**\n- Validates against `form_question` (mandatory, min/max, option membership).\n- Auto-projects hot fields onto `beneficiary` columns (name, husband, mobile, ABHA, village, age, LMP, EDD) by matching question labels — code names like `BASIC_9` are not hardcoded.\n- Generates a unique beneficiary code (`BEN-YYYY-XXXXXX`).\n- Writes the BASIC JSONB to `beneficiary_form_response`.\n\n**201 Created** with the new `BeneficiarySummary`. **400** on validation failure. **403** if you can't write to this ASHA's facility. **409** if same mobile or ABHA already registered at that facility (open existing record — do not POST BASIC again; use `PUT /api/beneficiaries/{id}`).\n\nThe Tests script saves the new id to `{{beneficiaryId}}`."
 				},
 				"response": []
 			},
@@ -721,7 +837,7 @@
 				"response": []
 			},
 			{
-				"name": "Submit form response (ANC1..4)",
+				"name": "Submit form response (ANC / PNC)",
 				"request": {
 					"method": "POST",
 					"header": [
@@ -739,7 +855,7 @@
 						"raw": "{\n  \"answers\": {\n    \"ANC1_19\": \"2025-10-30\",\n    \"ANC1_20\": \"1\",\n    \"ANC1_21\": \"110\",\n    \"ANC1_22\": \"70\"\n  },\n  \"status\": \"SUBMITTED\"\n}"
 					},
 					"url": "{{baseUrl}}/api/beneficiaries/{{beneficiaryId}}/forms/{{formCode}}",
-					"description": "`POST /api/beneficiaries/{id}/forms/{formCode}` — upsert a follow-up form response (`ANC1`, `ANC2`, `ANC3`, `ANC4`, future PNC, ...).\n\nSet `{{formCode}}` to the form you want (e.g. `ANC1`). The answer codes in the body above are illustrative — confirm them via `GET /api/admin/forms/ANC1`.\n\nValidator runs (mandatory / min-max / option membership). Computed-field codes (e.g. `ANC1_18 Due date of ANC 1`) are server-evaluated on read; values you send for them are ignored.\n\nIf a response already exists for this (beneficiary, form) pair it is updated in place. `status` defaults to `SUBMITTED`; `DRAFT` allows partial saves without enforcing every mandatory field — actually no: validation always runs. Use a smaller payload locally if you need to iterate.\n\n**Note:** this endpoint **rejects** `formCode = BASIC` with **400** — use `PUT /api/beneficiaries/{id}` for BASIC because it also mutates the typed beneficiary columns."
+					"description": "`POST /api/beneficiaries/{id}/forms/{formCode}` — upsert a follow-up form response (`ANC1`–`ANC4`, `PNC`, any future form).\n\nSet `{{formCode}}` (e.g. `ANC1`, `PNC`). Confirm answer keys via `GET /api/admin/forms/{code}` or `GET /api/forms/{code}/schema?beneficiaryId=`.\n\nValidator runs (mandatory / min-max / option membership). Computed fields are evaluated on read — do not rely on submitting them.\n\nUpserts in place if a response already exists. **400** if `formCode = BASIC` — use `PUT /api/beneficiaries/{id}` for BASIC edits."
 				},
 				"response": []
 			}

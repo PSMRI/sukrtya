@@ -14,4 +14,6 @@ public interface FormRepository extends JpaRepository<Form, Long> {
 	List<Form> findAllByOrderBySequenceAscNameAsc();
 
 	List<Form> findAllByActiveTrueOrderBySequenceAscNameAsc();
+
+	List<Form> findByPrerequisiteCodeIgnoreCase(String prerequisiteCode);
 }
