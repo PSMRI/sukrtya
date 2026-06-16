@@ -301,18 +301,33 @@ public class BeneficiaryService {
 		List<FormResponseStatusSummary> out = new ArrayList<>(forms.size());
 		for (Form f : forms) {
 			BeneficiaryFormResponse r = byFormId.get(f.getId());
+			boolean active = f.isActive();
 			if (r == null) {
+				FormCollectionState state = active ? FormCollectionState.NOT_STARTED : FormCollectionState.FORM_INACTIVE;
 				out.add(new FormResponseStatusSummary(
 						f.getCode(), f.getName(), f.getSequence(), f.getPrerequisiteCode(),
+						active, state,
 						false, null, null, null, null));
 			}
 			else {
+				FormCollectionState state = resolveCollectionState(active, r.getStatus());
 				out.add(new FormResponseStatusSummary(
 						f.getCode(), f.getName(), f.getSequence(), f.getPrerequisiteCode(),
+						active, state,
 						true, r.getStatus(), r.getFormVersion(), r.getSubmittedAt(), r.getUpdatedAt()));
 			}
 		}
 		return out;
+	}
+
+	private static FormCollectionState resolveCollectionState(boolean formActive, ResponseStatus status) {
+		if (!formActive) {
+			return FormCollectionState.FORM_INACTIVE_HAS_DATA;
+		}
+		if (status == ResponseStatus.SUBMITTED) {
+			return FormCollectionState.SUBMITTED;
+		}
+		return FormCollectionState.DRAFT;
 	}
 
 	private void applyBeneficiaryProjections(Beneficiary b, List<FormQuestion> basicQuestions, Map<String, Object> answers) {

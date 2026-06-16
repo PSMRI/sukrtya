@@ -105,7 +105,7 @@ public class FormCatalogService {
 		form.setCode(code);
 		form.setName(req.name().trim());
 		form.setSequence(req.sequence() != null ? req.sequence() : nextSequence());
-		form.setPrerequisiteCode(normaliseCodeNullable(req.prerequisiteCode()));
+		form.setPrerequisiteCode(validatePrerequisiteCode(code, req.prerequisiteCode()));
 		form.setDescription(req.description());
 		form.setActive(req.active() == null || req.active());
 		Form saved = formRepository.save(form);
@@ -124,7 +124,7 @@ public class FormCatalogService {
 		if (req.sequence() != null) {
 			form.setSequence(req.sequence());
 		}
-		form.setPrerequisiteCode(normaliseCodeNullable(req.prerequisiteCode()));
+		form.setPrerequisiteCode(validatePrerequisiteCode(newCode, req.prerequisiteCode()));
 		form.setDescription(req.description());
 		if (req.active() != null) {
 			form.setActive(req.active());
@@ -160,7 +160,9 @@ public class FormCatalogService {
 							+ " or remove/archive responses first.");
 		}
 
-		List<Form> dependents = formRepository.findByPrerequisiteCodeIgnoreCase(form.getCode());
+		List<Form> dependents = formRepository.findByPrerequisiteCodeIgnoreCase(form.getCode()).stream()
+				.filter(other -> !other.getId().equals(form.getId()))
+				.toList();
 		if (!dependents.isEmpty()) {
 			String codes = dependents.stream().map(Form::getCode).sorted().reduce((a, b) -> a + ", " + b).orElse("");
 			throw new ResponseStatusException(HttpStatus.CONFLICT,
@@ -198,6 +200,16 @@ public class FormCatalogService {
 			return null;
 		}
 		return raw.trim().toUpperCase(Locale.ROOT);
+	}
+
+	private static String validatePrerequisiteCode(String formCode, String prerequisiteCodeRaw) {
+		String prerequisite = normaliseCodeNullable(prerequisiteCodeRaw);
+		if (prerequisite != null && prerequisite.equalsIgnoreCase(formCode)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+					"prerequisiteCode cannot be the same as the form code ('" + formCode + "')."
+							+ " Use the form that must be completed first (e.g. ANC4 before PNC), or omit it for BASIC.");
+		}
+		return prerequisite;
 	}
 
 	private int nextSequence() {
